@@ -1,0 +1,83 @@
+# ===================
+# Python / Django
+# ===================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# ===================
+# Node / Angular
+# ===================
+node_modules/
+.angular/
+dist/
+.npm
+*.tgz
+.pnp.*
+
+# ===================
+# IDE
+# ===================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ===================
+# OS
+# ===================
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ===================
+# Environment
+# ===================
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ===================
+# Docker
+# ===================
+# Don't ignore docker-compose.yml
+*.log
+
+# ===================
+# Testing
+# ===================
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+coverage.xml
+*.cover
+
+# ===================
+# Misc
+# ===================
+*.bak
+*.tmp
+*.temp

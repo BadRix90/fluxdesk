@@ -1,0 +1,18 @@
+# Flux Backend - Django 6.0
+Django>=6.0,<6.1
+djangorestframework>=3.15,<4.0
+django-cors-headers>=4.6,<5.0
+psycopg[binary]>=3.2,<4.0
+dj-database-url>=2.2,<3.0
+channels>=4.2,<5.0
+channels-redis>=4.2,<5.0
+celery>=5.4,<6.0
+redis>=5.0,<6.0
+django-tasks>=0.5,<1.0
+djangorestframework-simplejwt>=5.3,<6.0
+django-filter>=24.3,<25.0
+python-dotenv>=1.0,<2.0
+gunicorn>=23.0,<24.0
+pytest>=8.3,<9.0
+pytest-django>=4.9,<5.0
+pytest-cov>=5.0,<6.0
