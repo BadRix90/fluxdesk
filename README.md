@@ -1,6 +1,6 @@
 <div align="center">
 
-![Flux Logo](docs/assets/full_margin_customcolor_customcolor.png)
+![Flux Logo](docs/assets/full_margin.png)
 
 # Flux
 
@@ -8,11 +8,11 @@
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Status](https://img.shields.io/badge/Status-Pre--Development-orange)](https://github.com/kaydietrich/flux)
-[![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-5.x-green.svg)](https://www.djangoproject.com/)
-[![Angular](https://img.shields.io/badge/Angular-20+-red.svg)](https://angular.io/)
+[![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-6.0-green.svg)](https://www.djangoproject.com/)
+[![Angular](https://img.shields.io/badge/Angular-21+-red.svg)](https://angular.dev/)
 
-[Website](https://fluxdesk.eu) • [Dokumentation](#) • [Roadmap](FLUX.md#roadmap) • [Contributing](#contributing)
+[Website](https://fluxdesk.eu) • [Documentation](docs/FLUX.md) • [Roadmap](docs/FLUX.md#roadmap) • [Contributing](#contributing)
 
 </div>
 
@@ -68,18 +68,18 @@ Flux bietet:
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Python 3.12+**
-- **Django 5.x** + Django REST Framework
-- **PostgreSQL** (mit pg_trgm für FTS, pgvector für AI)
-- **Redis** (Caching + Celery)
+- **Python 3.14+**
+- **Django 6.0** + Django REST Framework
+- **PostgreSQL 17** (mit pg_trgm für FTS, pgvector für AI)
+- **Redis 7** (Caching + Celery)
 - **Celery** (Background Jobs)
 - **Django Channels** (WebSockets)
 
 ### Frontend
-- **Angular 20+** (Standalone Components)
+- **Angular 21+** (Standalone Components)
 - **TypeScript** (Strict Mode)
 - **Signals** (Reactive State)
-- **TailwindCSS** (Styling)
+- **TailwindCSS 4** (Styling)
 
 ### AI
 - **Ollama** (Local LLM Runtime)
@@ -105,7 +105,7 @@ Das Projekt ist aktuell in der Konzept-Phase. Entwicklung startet **Q2 2026** (n
 - [ ] **Phase 2 (2-3 Wochen):** AI-Integration + Polish
 - [ ] **Phase 3 (Later):** Enterprise Features + Multi-Tenancy
 
-Siehe [FLUX.md](FLUX.md) für detaillierte Roadmap und Architektur.
+Siehe [docs/FLUX.md](docs/FLUX.md) für detaillierte Roadmap und Architektur.
 
 ---
 
@@ -128,11 +128,19 @@ docker-compose up -d
 
 ## 📖 Dokumentation
 
-- **[FLUX.md](FLUX.md)** - Komplettes Konzept-Dokument
+- **[FLUX.md](docs/FLUX.md)** - Komplettes Konzept-Dokument
   - Vision & Marktanalyse
   - Technische Architektur
   - Business Model
   - Konkurrenz-Vergleich
+- **[FLUX-DEV-RULES.md](docs/FLUX-DEV-RULES.md)** - Coding Standards & Guidelines
+  - Max 14 Zeilen pro Funktion
+  - Max 400 Zeilen pro Datei
+  - Django 6.0 & Angular 21 Best Practices
+- **[FLUX-DESIGN-SYSTEM.md](docs/FLUX-DESIGN-SYSTEM.md)** - Design System
+  - Farben (Light/Dark Mode)
+  - Typografie (Inter)
+  - WCAG AAA konform
 - **[Contributing Guidelines](CONTRIBUTING.md)** - Wie du beitragen kannst *(coming soon)*
 - **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community-Regeln *(coming soon)*
 
