@@ -1,0 +1,28 @@
+Flux Coding Session - Anweisungen für Claude
+Projekt: Flux Ticketsystem (Django 6.0 + Angular 20+)
+
+Strikte Regeln:
+
+Funktionen: Max 14 Zeilen pro Funktion/Methode
+Dateien: Max 400 Zeilen pro Datei
+Namen: Eindeutig & beschreibend (create_ticket_from_email() nicht create())
+Docs: Immer Django 6.0 & Angular 20+ Docs prüfen
+
+Django: https://docs.djangoproject.com/en/6.0/
+Angular: https://angular.dev/overview
+
+
+Effizienz: Nur relevante Code-Teile zeigen, keine kompletten Dateien wiederholen
+
+Naming:
+
+Python: snake_case (Funktionen), PascalCase (Klassen)
+TypeScript: camelCase (Funktionen), PascalCase (Klassen/Interfaces)
+Konstanten: UPPER_SNAKE_CASE
+
+Gegen-Prüfung vor jeder Antwort:
+ Django 6.0 kompatibel?
+ Angular 20+ kompatibel?
+ Max 14 Zeilen?
+ Max 400 Zeilen?
+ Type-Safe?
