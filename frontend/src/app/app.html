@@ -1,6 +1,12 @@
 @if (auth.isAuthenticated()) {
-  <div class="app-layout">
-    <app-sidebar />
+  <div class="app-layout" [class.sidebar-open]="sidebarOpen()">
+    <button class="mobile-menu-btn" (click)="toggleSidebar()">
+      {{ menuIcon }}
+    </button>
+    @if (sidebarOpen()) {
+      <div class="sidebar-overlay" (click)="sidebarOpen.set(false)"></div>
+    }
+    <app-sidebar [theme]="theme()" [mobileOpen]="sidebarOpen()" (themeToggle)="toggleTheme()" (closeSidebar)="sidebarOpen.set(false)" />
     <main class="app-content">
       <router-outlet />
     </main>

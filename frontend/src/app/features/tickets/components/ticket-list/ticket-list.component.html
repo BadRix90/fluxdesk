@@ -1,18 +1,25 @@
 <div class="ticket-list-header">
   <div class="header-left">
-    <h2 class="text-lg font-semibold">Tickets</h2>
-    <span class="text-sm text-[var(--text-tertiary)]">
-      {{ ticketService.totalCount() }} Ergebnisse
-    </span>
+    <h2>Tickets</h2>
+    <span class="header-count">{{ ticketService.totalCount() }}</span>
   </div>
   <a routerLink="/tickets/new" class="new-ticket-btn">+ Neues Ticket</a>
 </div>
 
 <div class="ticket-list">
   @if (ticketService.loading()) {
-    <div class="loading">Laden...</div>
+    @for (i of [1,2,3,4,5]; track i) {
+      <div class="skeleton-row">
+        <div class="skeleton-line skeleton-short"></div>
+        <div class="skeleton-line skeleton-long"></div>
+        <div class="skeleton-line skeleton-badge"></div>
+      </div>
+    }
   } @else if (ticketService.tickets().length === 0) {
-    <div class="empty">Keine Tickets gefunden.</div>
+    <div class="empty">
+      <div class="empty-icon">&#x1F4ED;</div>
+      <p>Keine Tickets gefunden.</p>
+    </div>
   } @else {
     @for (ticket of ticketService.tickets(); track ticket.id) {
       <a [routerLink]="['/tickets', ticket.id]" class="ticket-row">

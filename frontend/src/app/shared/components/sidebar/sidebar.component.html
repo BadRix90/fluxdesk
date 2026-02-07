@@ -1,4 +1,5 @@
 <aside class="sidebar">
+  <button class="sidebar-close" (click)="closeSidebar.emit()">&times;</button>
   <div class="sidebar-header">
     <img src="logo.png" alt="FluxDesk" class="sidebar-logo" />
   </div>
@@ -11,16 +12,24 @@
         [routerLinkActiveOptions]="{ exact: item.route === '/tickets' }"
         class="nav-item"
       >
+        <span class="nav-icon">{{ item.icon }}</span>
         <span class="nav-label">{{ item.label }}</span>
       </a>
     }
   </nav>
 
   <div class="sidebar-footer">
+    <button (click)="themeToggle.emit()" class="theme-toggle">
+      {{ themeIcon() }}
+    </button>
+
     @if (auth.currentUser(); as user) {
-      <div class="user-info">
-        <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
-        <span class="user-role">{{ user.role }}</span>
+      <div class="user-section">
+        <div class="user-avatar">{{ initials() }}</div>
+        <div class="user-info">
+          <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+          <span class="user-role">{{ user.role }}</span>
+        </div>
       </div>
     }
     <button (click)="auth.logout()" class="logout-btn">Abmelden</button>
