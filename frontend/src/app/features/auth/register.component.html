@@ -1,0 +1,120 @@
+<div class="register-container">
+  <div class="register-card">
+    <img src="logo.png" alt="FluxDesk" class="register-logo" />
+
+    @if (success()) {
+      <div class="success-card">
+        <h2>Fast geschafft!</h2>
+        <p>
+          Wir haben dir eine Bestätigungs-E-Mail gesendet.
+          Bitte klicke auf den Link in der E-Mail, um dein Konto zu aktivieren.
+        </p>
+        <p class="hint">Der Link ist 48 Stunden gültig.</p>
+        <a routerLink="/login" class="register-btn">Zur Anmeldung</a>
+      </div>
+    } @else {
+      <p class="register-subtitle">Organisation registrieren</p>
+
+      <form (ngSubmit)="onSubmit()" class="register-form">
+        @if (error()) {
+          <div class="error-msg">{{ error() }}</div>
+        }
+
+        <fieldset class="form-section">
+          <legend>Organisation</legend>
+          <div class="form-group">
+            <label for="orgName">Firmenname</label>
+            <input
+              id="orgName"
+              type="text"
+              [(ngModel)]="orgName"
+              name="orgName"
+              placeholder="z.B. Acme GmbH"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="supportEmail">Support E-Mail</label>
+            <input
+              id="supportEmail"
+              type="email"
+              [(ngModel)]="supportEmail"
+              name="supportEmail"
+              placeholder="support@firma.de"
+              required
+            />
+          </div>
+        </fieldset>
+
+        <fieldset class="form-section">
+          <legend>Admin-Account</legend>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">Vorname</label>
+              <input
+                id="firstName"
+                type="text"
+                [(ngModel)]="firstName"
+                name="firstName"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="lastName">Nachname</label>
+              <input
+                id="lastName"
+                type="text"
+                [(ngModel)]="lastName"
+                name="lastName"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input
+              id="email"
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              placeholder="admin@firma.de"
+              autocomplete="email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="username">Benutzername</label>
+            <input
+              id="username"
+              type="text"
+              [(ngModel)]="username"
+              name="username"
+              autocomplete="username"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Passwort</label>
+            <input
+              id="password"
+              type="password"
+              [(ngModel)]="password"
+              name="password"
+              placeholder="Mind. 8 Zeichen"
+              autocomplete="new-password"
+              required
+            />
+          </div>
+        </fieldset>
+
+        <button type="submit" class="register-btn" [disabled]="loading()">
+          {{ loading() ? 'Wird erstellt...' : 'Organisation erstellen' }}
+        </button>
+      </form>
+
+      <p class="login-link">
+        Bereits registriert? <a routerLink="/login">Anmelden</a>
+      </p>
+    }
+  </div>
+</div>

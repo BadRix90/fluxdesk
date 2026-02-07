@@ -1,0 +1,71 @@
+<div class="invite-container">
+  <div class="invite-card">
+    <img src="logo.png" alt="FluxDesk" class="invite-logo" />
+
+    @if (success()) {
+      <div class="success-card">
+        <h2>Willkommen!</h2>
+        <p>Dein Konto wurde erstellt. Du kannst dich jetzt anmelden.</p>
+        <a routerLink="/login" class="invite-btn">Zur Anmeldung</a>
+      </div>
+    } @else {
+      <p class="invite-subtitle">Einladung annehmen</p>
+
+      <form (ngSubmit)="onSubmit()" class="invite-form">
+        @if (error()) {
+          <div class="error-msg">{{ error() }}</div>
+        }
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">Vorname</label>
+            <input
+              id="firstName"
+              type="text"
+              [(ngModel)]="firstName"
+              name="firstName"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="lastName">Nachname</label>
+            <input
+              id="lastName"
+              type="text"
+              [(ngModel)]="lastName"
+              name="lastName"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="username">Benutzername</label>
+          <input
+            id="username"
+            type="text"
+            [(ngModel)]="username"
+            name="username"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Passwort</label>
+          <input
+            id="password"
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Mind. 8 Zeichen"
+            autocomplete="new-password"
+            required
+          />
+        </div>
+
+        <button type="submit" class="invite-btn" [disabled]="loading()">
+          {{ loading() ? 'Wird erstellt...' : 'Konto erstellen' }}
+        </button>
+      </form>
+    }
+  </div>
+</div>

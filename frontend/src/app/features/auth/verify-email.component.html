@@ -1,0 +1,17 @@
+<div class="verify-container">
+  <div class="verify-card">
+    <img src="logo.png" alt="FluxDesk" class="verify-logo" />
+
+    @if (loading()) {
+      <p class="verify-status">E-Mail wird bestätigt...</p>
+    } @else if (success()) {
+      <h2>E-Mail bestätigt!</h2>
+      <p>Dein Konto wurde aktiviert. Du kannst dich jetzt anmelden.</p>
+      <a routerLink="/login" class="verify-btn">Zur Anmeldung</a>
+    } @else {
+      <h2>Fehler</h2>
+      <p class="error-text">{{ error() }}</p>
+      <a routerLink="/login" class="verify-btn">Zur Anmeldung</a>
+    }
+  </div>
+</div>

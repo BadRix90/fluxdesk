@@ -76,6 +76,19 @@ coverage.xml
 *.cover
 
 # ===================
+# Celery
+# ===================
+celerybeat-schedule
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+celerybeat.pid
+
+# ===================
+# Claude Code
+# ===================
+.claude/
+
+# ===================
 # Misc
 # ===================
 *.bak

@@ -1,0 +1,79 @@
+@if (ticket; as t) {
+  <div class="detail-header">
+    <button (click)="goBack()" class="back-btn">&larr; Zurück</button>
+    <div class="detail-actions">
+      @if (!t.assignee) {
+        <button (click)="assignToMe()" class="btn btn-primary">Mir zuweisen</button>
+      }
+      @if (t.status !== 'RESOLVED' && t.status !== 'CLOSED') {
+        <button (click)="resolve()" class="btn btn-success">Lösen</button>
+      }
+      @if (t.status === 'RESOLVED') {
+        <button (click)="close()" class="btn btn-secondary">Schließen</button>
+      }
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <div class="detail-main">
+      <h2 class="detail-subject">#{{ t.id }} {{ t.subject }}</h2>
+
+      <div class="detail-meta">
+        <app-status-badge [status]="t.status" />
+        <span class="priority" [attr.data-priority]="t.priority">
+          {{ priorityLabel(t.priority) }}
+        </span>
+        <span class="meta-item">Von: {{ t.customer.display_name }}</span>
+        <span class="meta-item">
+          Zugewiesen: {{ t.assignee?.display_name ?? 'Niemand' }}
+        </span>
+        <span class="meta-item">{{ t.created_at | date:'dd.MM.yyyy HH:mm' }}</span>
+      </div>
+
+      <div class="description">
+        <p>{{ t.description }}</p>
+      </div>
+
+      <div class="comments-section">
+        <h3>Kommentare ({{ t.comments.length }})</h3>
+
+        @for (comment of t.comments; track comment.id) {
+          <div class="comment" [class.internal]="comment.is_internal">
+            <div class="comment-header">
+              <strong>{{ comment.author.display_name }}</strong>
+              @if (comment.is_internal) {
+                <span class="internal-badge">Intern</span>
+              }
+              <span class="comment-date">{{ comment.created_at | date:'dd.MM.yy HH:mm' }}</span>
+            </div>
+            <p class="comment-text">{{ comment.text }}</p>
+          </div>
+        }
+
+        <form (ngSubmit)="addComment()" class="comment-form">
+          <textarea
+            [(ngModel)]="commentText"
+            name="comment"
+            placeholder="Kommentar schreiben..."
+            rows="3"
+          ></textarea>
+          <div class="comment-form-actions">
+            <label class="internal-toggle">
+              <input
+                type="checkbox"
+                [checked]="isInternal()"
+                (change)="isInternal.set(!isInternal())"
+              />
+              Interne Notiz
+            </label>
+            <button type="submit" class="btn btn-primary" [disabled]="!commentText.trim()">
+              Senden
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="loading">Ticket wird geladen...</div>
+}

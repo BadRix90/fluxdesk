@@ -1,0 +1,62 @@
+.verify-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--bg-secondary);
+  padding: 2rem;
+}
+
+.verify-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2.5rem;
+  text-align: center;
+
+  h2 {
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.verify-logo {
+  display: block;
+  margin: 0 auto 1.5rem;
+  max-width: 200px;
+  height: auto;
+}
+
+.verify-status {
+  color: var(--text-tertiary);
+}
+
+.error-text {
+  color: var(--color-danger);
+}
+
+.verify-btn {
+  display: inline-block;
+  padding: 0.625rem 2rem;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}

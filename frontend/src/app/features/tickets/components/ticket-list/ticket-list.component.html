@@ -1,0 +1,35 @@
+<div class="ticket-list-header">
+  <h2 class="text-lg font-semibold">Tickets</h2>
+  <span class="text-sm text-[var(--text-tertiary)]">
+    {{ ticketService.totalCount() }} Ergebnisse
+  </span>
+</div>
+
+<div class="ticket-list">
+  @if (ticketService.loading()) {
+    <div class="loading">Laden...</div>
+  } @else if (ticketService.tickets().length === 0) {
+    <div class="empty">Keine Tickets gefunden.</div>
+  } @else {
+    @for (ticket of ticketService.tickets(); track ticket.id) {
+      <a [routerLink]="['/tickets', ticket.id]" class="ticket-row">
+        <div class="ticket-main">
+          <span class="ticket-id">#{{ ticket.id }}</span>
+          <span class="ticket-subject">{{ ticket.subject }}</span>
+        </div>
+        <div class="ticket-meta">
+          <app-status-badge [status]="ticket.status" />
+          <span class="ticket-priority" [attr.data-priority]="ticket.priority">
+            {{ priorityLabel(ticket.priority) }}
+          </span>
+          <span class="ticket-assignee">
+            {{ ticket.assignee?.display_name ?? 'Nicht zugewiesen' }}
+          </span>
+          <span class="ticket-date">
+            {{ ticket.created_at | date:'dd.MM.yy HH:mm' }}
+          </span>
+        </div>
+      </a>
+    }
+  }
+</div>

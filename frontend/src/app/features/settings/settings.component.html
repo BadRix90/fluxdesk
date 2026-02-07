@@ -1,0 +1,122 @@
+@if (orgService.organization(); as org) {
+  <div class="settings-page">
+    <h2>Einstellungen</h2>
+
+    <section class="settings-section">
+      <h3>Organisation</h3>
+      @if (saveSuccess()) {
+        <div class="success-msg">Gespeichert!</div>
+      }
+      <div class="form-group">
+        <label for="orgName">Firmenname</label>
+        <input
+          id="orgName"
+          type="text"
+          [ngModel]="org.name"
+          (ngModelChange)="orgService.organization.set({...org, name: $event})"
+          name="orgName"
+        />
+      </div>
+      <div class="form-group">
+        <label for="supportEmail">Support E-Mail</label>
+        <input
+          id="supportEmail"
+          type="email"
+          [ngModel]="org.support_email"
+          (ngModelChange)="orgService.organization.set({...org, support_email: $event})"
+          name="supportEmail"
+        />
+      </div>
+      <div class="form-group">
+        <label for="website">Website</label>
+        <input
+          id="website"
+          type="url"
+          [ngModel]="org.website"
+          (ngModelChange)="orgService.organization.set({...org, website: $event})"
+          name="website"
+          placeholder="https://firma.de"
+        />
+      </div>
+      <div class="form-group">
+        <label for="signature">E-Mail Signatur (HTML)</label>
+        <textarea
+          id="signature"
+          [ngModel]="org.signature_html"
+          (ngModelChange)="orgService.organization.set({...org, signature_html: $event})"
+          name="signature"
+          rows="4"
+          placeholder="<p>Mit freundlichen Grüßen</p>"
+        ></textarea>
+      </div>
+      <button (click)="saveOrg()" class="btn btn-primary">Speichern</button>
+    </section>
+
+    <section class="settings-section">
+      <h3>Mitarbeiter einladen</h3>
+      @if (inviteSuccess()) {
+        <div class="success-msg">Einladung an {{ inviteSuccess() }} gesendet!</div>
+      }
+      <div class="invite-form">
+        <input
+          type="email"
+          [(ngModel)]="inviteEmail"
+          name="inviteEmail"
+          placeholder="mitarbeiter@firma.de"
+        />
+        <select [(ngModel)]="inviteRole" name="inviteRole">
+          <option value="AGENT">Agent</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+        <button (click)="sendInvite()" class="btn btn-primary" [disabled]="!inviteEmail.trim()">
+          Einladen
+        </button>
+      </div>
+
+      @if (orgService.invitations().length > 0) {
+        <table class="invite-table">
+          <thead>
+            <tr>
+              <th>E-Mail</th>
+              <th>Rolle</th>
+              <th>Status</th>
+              <th>Gesendet</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (inv of orgService.invitations(); track inv.id) {
+              <tr>
+                <td>{{ inv.email }}</td>
+                <td>{{ inv.role }}</td>
+                <td>
+                  <span class="invite-status" [attr.data-status]="inv.status">
+                    {{ inv.status }}
+                  </span>
+                </td>
+                <td>{{ inv.created_at | date:'dd.MM.yy' }}</td>
+                <td>
+                  @if (inv.status === 'PENDING') {
+                    <button (click)="deleteInvite(inv.id)" class="btn-delete">
+                      Löschen
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+  </div>
+} @else if (noOrg()) {
+  <div class="settings-page">
+    <h2>Einstellungen</h2>
+    <div class="no-org">
+      <p>Dein Account ist keiner Organisation zugeordnet.</p>
+      <p>Bitte registriere zuerst eine Organisation oder lass dich von einem Admin einladen.</p>
+    </div>
+  </div>
+} @else {
+  <div class="loading">Laden...</div>
+}

@@ -1,0 +1,46 @@
+<div class="login-container">
+  <div class="login-card">
+    <img src="logo.png" alt="FluxDesk" class="login-logo" />
+    <p class="login-subtitle">Support ohne Reibung</p>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      @if (error()) {
+        <div class="error-msg">{{ error() }}</div>
+      }
+
+      <div class="form-group">
+        <label for="username">Benutzername</label>
+        <input
+          id="username"
+          type="text"
+          [(ngModel)]="username"
+          name="username"
+          placeholder="Benutzername"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Passwort</label>
+        <input
+          id="password"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="Passwort"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <button type="submit" class="login-btn" [disabled]="loading()">
+        {{ loading() ? 'Anmelden...' : 'Anmelden' }}
+      </button>
+    </form>
+
+    <p class="register-link">
+      Neu hier? <a routerLink="/register">Organisation registrieren</a>
+    </p>
+  </div>
+</div>
