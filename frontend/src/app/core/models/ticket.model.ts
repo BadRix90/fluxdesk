@@ -5,6 +5,7 @@ export type TicketPriority = 1 | 2 | 3 | 4;
 
 export interface Ticket {
   id: number;
+  ticket_number: number;
   subject: string;
   description: string;
   status: TicketStatus;

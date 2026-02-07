@@ -17,6 +17,12 @@
   </nav>
 
   <div class="sidebar-footer">
+    @if (auth.currentUser(); as user) {
+      <div class="user-info">
+        <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+        <span class="user-role">{{ user.role }}</span>
+      </div>
+    }
     <button (click)="auth.logout()" class="logout-btn">Abmelden</button>
   </div>
 </aside>

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { AuthService } from './core/services/auth.service';
@@ -11,6 +11,12 @@ import { SidebarComponent } from './shared/components/sidebar/sidebar.component'
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
+export class App implements OnInit {
   auth = inject(AuthService);
+
+  ngOnInit(): void {
+    if (this.auth.isAuthenticated()) {
+      this.auth.fetchMe();
+    }
+  }
 }

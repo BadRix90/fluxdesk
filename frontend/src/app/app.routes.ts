@@ -55,6 +55,12 @@ export const routes: Routes = [
         data: { filter: 'escalated' },
       },
       {
+        path: 'new',
+        loadComponent: () =>
+          import('./features/tickets/components/ticket-create/ticket-create.component')
+            .then(m => m.TicketCreateComponent),
+      },
+      {
         path: ':id',
         loadComponent: () =>
           import('./features/tickets/components/ticket-detail/ticket-detail.component')

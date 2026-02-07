@@ -3,6 +3,7 @@ from rest_framework.response import Response
 
 from apps.core.email import send_invitation_email, send_verification_email
 from apps.core.models import Invitation, Organization
+from apps.users.api.serializers import UserSerializer
 
 from .serializers import (
     AcceptInvitationSerializer,
@@ -12,6 +13,13 @@ from .serializers import (
     RegisterSerializer,
     VerifyEmailSerializer,
 )
+
+
+class MeView(viewsets.ViewSet):
+    """Return current authenticated user info."""
+
+    def list(self, request):
+        return Response(UserSerializer(request.user).data)
 
 
 class RegisterView(viewsets.ViewSet):

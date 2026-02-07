@@ -53,6 +53,23 @@
   border-top: 1px solid var(--border-color);
 }
 
+.user-info {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.75rem;
+}
+
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.user-role {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
 .logout-btn {
   width: 100%;
   padding: 0.5rem;

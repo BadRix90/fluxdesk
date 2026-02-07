@@ -48,7 +48,7 @@ class TicketListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = [
-            'id', 'subject', 'status', 'priority',
+            'id', 'ticket_number', 'subject', 'status', 'priority',
             'customer', 'assignee', 'created_at', 'updated_at',
             'comment_count',
         ]
@@ -65,12 +65,14 @@ class TicketDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = [
-            'id', 'subject', 'description', 'status', 'priority',
-            'customer', 'assignee', 'created_at', 'updated_at',
-            'resolved_at', 'closed_at', 'comments', 'attachments',
+            'id', 'ticket_number', 'subject', 'description',
+            'status', 'priority', 'customer', 'assignee',
+            'created_at', 'updated_at', 'resolved_at', 'closed_at',
+            'comments', 'attachments',
         ]
         read_only_fields = [
-            'id', 'customer', 'created_at', 'updated_at',
+            'id', 'ticket_number', 'customer',
+            'created_at', 'updated_at',
             'resolved_at', 'closed_at',
         ]
 
@@ -78,5 +80,5 @@ class TicketDetailSerializer(serializers.ModelSerializer):
 class TicketCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
-        fields = ['id', 'subject', 'description', 'priority']
-        read_only_fields = ['id']
+        fields = ['id', 'ticket_number', 'subject', 'description', 'priority']
+        read_only_fields = ['id', 'ticket_number']

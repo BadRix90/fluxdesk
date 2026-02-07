@@ -5,6 +5,15 @@ export interface User {
   role: 'ADMIN' | 'AGENT' | 'CUSTOMER';
 }
 
+export interface UserProfile {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  role: 'ADMIN' | 'AGENT' | 'CUSTOMER';
+}
+
 export interface AuthTokens {
   access: string;
   refresh: string;

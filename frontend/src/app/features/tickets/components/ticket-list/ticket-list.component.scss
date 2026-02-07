@@ -6,6 +6,26 @@
   border-bottom: 1px solid var(--border-color);
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.new-ticket-btn {
+  padding: 0.375rem 0.75rem;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
 .ticket-list {
   overflow-y: auto;
   flex: 1;

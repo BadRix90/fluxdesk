@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Max
 from django.utils import timezone
 
 from apps.core.models import SoftDeleteModel, TimestampedModel
@@ -64,6 +65,10 @@ class Ticket(TimestampedModel, SoftDeleteModel):
         null=True,
         blank=True,
     )
+    ticket_number = models.PositiveIntegerField(
+        editable=False,
+        help_text='Sequential number per organization.',
+    )
     subject = models.CharField(max_length=200)
     description = models.TextField()
     status = models.CharField(
@@ -95,6 +100,12 @@ class Ticket(TimestampedModel, SoftDeleteModel):
     class Meta:
         db_table = 'flux_tickets'
         ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['organization', 'ticket_number'],
+                name='uq_ticket_org_number',
+            ),
+        ]
         indexes = [
             models.Index(
                 fields=['status'],
@@ -117,7 +128,19 @@ class Ticket(TimestampedModel, SoftDeleteModel):
         ]
 
     def __str__(self) -> str:
-        return f'#{self.pk} {self.subject}'
+        return f'#{self.ticket_number} {self.subject}'
+
+    def save(self, *args, **kwargs):
+        if not self.ticket_number:
+            self.ticket_number = self._next_number()
+        super().save(*args, **kwargs)
+
+    def _next_number(self) -> int:
+        """Get the next ticket number for this organization."""
+        result = Ticket.objects.filter(
+            organization=self.organization,
+        ).aggregate(max_num=Max('ticket_number'))
+        return (result['max_num'] or 0) + 1
 
     def assign_to(self, agent) -> None:
         """Assign ticket to an agent."""

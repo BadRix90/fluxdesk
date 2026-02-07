@@ -3,7 +3,11 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
-import { type AuthTokens, type MessageResponse } from '../models/user.model';
+import {
+  type AuthTokens,
+  type MessageResponse,
+  type UserProfile,
+} from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,6 +17,7 @@ export class AuthService {
   accessToken = signal<string | null>(
     localStorage.getItem('access_token')
   );
+  currentUser = signal<UserProfile | null>(null);
 
   isAuthenticated = computed(() => !!this.accessToken());
 
@@ -21,8 +26,18 @@ export class AuthService {
       username,
       password,
     }).pipe(
-      tap(tokens => this.storeTokens(tokens))
+      tap(tokens => {
+        this.storeTokens(tokens);
+        this.fetchMe();
+      })
     );
+  }
+
+  fetchMe(): void {
+    this.http.get<UserProfile>('/api/me/').subscribe({
+      next: (user) => this.currentUser.set(user),
+      error: () => this.currentUser.set(null),
+    });
   }
 
   register(data: {
@@ -59,6 +74,7 @@ export class AuthService {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     this.accessToken.set(null);
+    this.currentUser.set(null);
     this.router.navigate(['/login']);
   }
 

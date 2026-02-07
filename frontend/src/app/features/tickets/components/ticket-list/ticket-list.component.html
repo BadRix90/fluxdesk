@@ -1,8 +1,11 @@
 <div class="ticket-list-header">
-  <h2 class="text-lg font-semibold">Tickets</h2>
-  <span class="text-sm text-[var(--text-tertiary)]">
-    {{ ticketService.totalCount() }} Ergebnisse
-  </span>
+  <div class="header-left">
+    <h2 class="text-lg font-semibold">Tickets</h2>
+    <span class="text-sm text-[var(--text-tertiary)]">
+      {{ ticketService.totalCount() }} Ergebnisse
+    </span>
+  </div>
+  <a routerLink="/tickets/new" class="new-ticket-btn">+ Neues Ticket</a>
 </div>
 
 <div class="ticket-list">
@@ -14,7 +17,7 @@
     @for (ticket of ticketService.tickets(); track ticket.id) {
       <a [routerLink]="['/tickets', ticket.id]" class="ticket-row">
         <div class="ticket-main">
-          <span class="ticket-id">#{{ ticket.id }}</span>
+          <span class="ticket-id">#{{ ticket.ticket_number }}</span>
           <span class="ticket-subject">{{ ticket.subject }}</span>
         </div>
         <div class="ticket-meta">
