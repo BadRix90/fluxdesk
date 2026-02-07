@@ -3,6 +3,11 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from apps.core.email import (
+    send_comment_email,
+    send_ticket_created_email,
+    send_ticket_resolved_email,
+)
 from apps.tickets.models import Comment, Ticket
 
 from .serializers import (
@@ -51,6 +56,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         ticket = serializer.save()
+        send_ticket_created_email(ticket)
         return Response(
             TicketDetailSerializer(ticket).data,
             status=status.HTTP_201_CREATED,
@@ -98,6 +104,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         """Mark ticket as resolved."""
         ticket = self.get_object()
         ticket.resolve()
+        send_ticket_resolved_email(ticket)
         return Response(TicketDetailSerializer(ticket).data)
 
     @action(detail=True, methods=['post'])
@@ -120,10 +127,11 @@ class TicketViewSet(viewsets.ModelViewSet):
         ticket = self.get_object()
         serializer = CommentSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(
+        comment = serializer.save(
             ticket=ticket,
             author=request.user,
         )
+        send_comment_email(comment)
         return Response(
             serializer.data,
             status=status.HTTP_201_CREATED,

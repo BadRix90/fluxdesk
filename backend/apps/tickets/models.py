@@ -199,6 +199,10 @@ class Comment(TimestampedModel):
     text = models.TextField()
     is_internal = models.BooleanField(default=False)
     edited_at = models.DateTimeField(null=True, blank=True)
+    message_id = models.CharField(max_length=512, blank=True, default='')
+    message_id_md5 = models.CharField(
+        max_length=32, blank=True, default='', db_index=True,
+    )
 
     class Meta:
         db_table = 'flux_comments'

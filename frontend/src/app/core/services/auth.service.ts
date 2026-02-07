@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { catchError, Observable, of, tap } from 'rxjs';
 
 import {
   type AuthTokens,
@@ -38,6 +38,16 @@ export class AuthService {
       next: (user) => this.currentUser.set(user),
       error: () => this.currentUser.set(null),
     });
+  }
+
+  validateSession(): Observable<UserProfile | null> {
+    return this.http.get<UserProfile>('/api/me/').pipe(
+      tap(user => this.currentUser.set(user)),
+      catchError(() => {
+        this.logout();
+        return of(null);
+      }),
+    );
   }
 
   register(data: {
