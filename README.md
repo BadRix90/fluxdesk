@@ -2,232 +2,170 @@
 
 ![Flux Logo](docs/assets/full_margin.png)
 
-# Flux
+# FluxDesk
 
-**Support ohne Reibung. Made in Europe.**
+**Open-source ticketing system. Fast, private, European.**
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Status](https://img.shields.io/badge/Status-Pre--Development-orange)](https://github.com/kaydietrich/flux)
-[![Python](https://img.shields.io/badge/Python-3.14+-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/Python-3.13+-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-6.0-green.svg)](https://www.djangoproject.com/)
-[![Angular](https://img.shields.io/badge/Angular-21+-red.svg)](https://angular.dev/)
-
-[Website](https://fluxdesk.eu) • [Documentation](docs/FLUX.md) • [Roadmap](docs/FLUX.md#roadmap) • [Contributing](#contributing)
+[![Angular](https://img.shields.io/badge/Angular-21-red.svg)](https://angular.dev/)
 
 </div>
 
 ---
 
-## 🎯 Vision
+## What is FluxDesk?
 
-Flux ist ein **modernes Open-Source-Ticketsystem**, das sich auf **Geschwindigkeit**, **Einfachheit** und **Datenschutz** fokussiert.
+FluxDesk is a lightweight, self-hostable ticketing system built for teams that care about speed and data privacy. It runs on a modern stack (Django + Angular) and keeps everything — including AI features — local and GDPR-compliant.
 
-### Das Problem
+### Key Features
 
-Bestehende Lösungen leiden unter:
-- 🐌 **Performance-Problemen** (Zammad: 8GB RAM, Jira: 5s Ladezeiten)
-- 💸 **Hohen Kosten** (Zendesk: $99/Agent/Monat)
-- 🌐 **US-Cloud-Abhängigkeit** (DSGVO-Bedenken)
-- 🤯 **Feature-Bloat** (90% Features werden nicht genutzt)
-
-### Die Lösung
-
-Flux bietet:
-- ⚡ **Extreme Performance** (<500MB RAM, <200ms Ticket-Öffnung)
-- 🧠 **Local-First AI** (Ollama + pgvector, 100% DSGVO-konform)
-- 🎨 **Inbox-Style UI** (Gmail-Feeling, Keyboard-First)
-- 🇪🇺 **Made in Europe** (Hosting in Deutschland)
-- 💰 **Fair Pricing** (Resource-based, nicht per Agent)
+- **Multi-tenant organizations** — each org has its own users, tickets, and settings
+- **Role-based access** — Admin, Agent, and Customer roles with scoped permissions
+- **Email verification & agent invitations** — secure onboarding with token-based flows
+- **Ticket management** — create, assign, escalate, resolve, comment
+- **Queue views** — my queue, unassigned, escalated
+- **JWT authentication** — stateless auth with token refresh
+- **Local-first AI** (planned) — Ollama + pgvector, no data leaves your server
 
 ---
 
-## ✨ Key Features (Planned)
+## Tech Stack
 
-### Core
-- 📥 **Inbox-View** - Split-Layout, Real-Time Updates
-- ⌨️ **Keyboard-First** - j/k Navigation, Command Palette (Ctrl+K)
-- 🔍 **PostgreSQL FTS** - Keine Elasticsearch-Abhängigkeit
-- 📧 **Email-Integration** - Tickets via Email erstellen & beantworten
-- 🤖 **Auto-Assignment** - Intelligente Zuweisung
-- ⏰ **Auto-Escalation** - 24h/48h/72h Rules
-
-### AI-Powered (DSGVO-konform)
-- 🧠 **Local LLMs** (Ollama: Llama-3, Mistral, Mixtral)
-- 🔎 **RAG** (Retrieval-Augmented Generation via pgvector)
-- ✍️ **Draft-Mode** - AI schlägt vor, Mensch sendet
-- 🏷️ **Auto-Tagging** - Kategorisierung durch KI
-
-### Analytics & Reporting
-- 📊 **Dashboards** (Agent + Team)
-- 📈 **Key Metrics** (Response Time, Resolution Rate)
-- 💾 **Unlimited Export** (kein 6.000-Zeilen-Limit)
-- 🗄️ **SQL-Access** (Read-Only für Power-User)
+| Layer | Technology |
+|---|---|
+| **Backend** | Python 3.13+, Django 6.0, Django REST Framework, SimpleJWT |
+| **Frontend** | Angular 21, TypeScript, Signals, TailwindCSS 4 |
+| **Database** | PostgreSQL 17 |
+| **Cache / Broker** | Redis 7 |
+| **Task Queue** | Celery |
+| **Real-time** | Django Channels (WebSockets) |
+| **AI** (planned) | Ollama, pgvector, sentence-transformers |
+| **Deployment** | Docker Compose |
 
 ---
 
-## 🛠️ Tech Stack
-
-### Backend
-- **Python 3.14+**
-- **Django 6.0** + Django REST Framework
-- **PostgreSQL 17** (mit pg_trgm für FTS, pgvector für AI)
-- **Redis 7** (Caching + Celery)
-- **Celery** (Background Jobs)
-- **Django Channels** (WebSockets)
-
-### Frontend
-- **Angular 21+** (Standalone Components)
-- **TypeScript** (Strict Mode)
-- **Signals** (Reactive State)
-- **TailwindCSS 4** (Styling)
-
-### AI
-- **Ollama** (Local LLM Runtime)
-- **pgvector** (Vektor-Datenbank)
-- **sentence-transformers** (Embeddings)
-
-### Deployment
-- **Docker** + Docker Compose
-- **Nginx** (Reverse Proxy)
-- **Hetzner Cloud** (Hosting)
-
----
-
-## 📋 Status
-
-**🚧 Pre-Development Phase**
-
-Das Projekt ist aktuell in der Konzept-Phase. Entwicklung startet **Q2 2026** (nach Factora-Launch).
-
-### Roadmap
-
-- [ ] **Phase 1 (4-6 Wochen):** MVP - Core Ticketsystem
-- [ ] **Phase 2 (2-3 Wochen):** AI-Integration + Polish
-- [ ] **Phase 3 (Later):** Enterprise Features + Multi-Tenancy
-
-Siehe [docs/FLUX.md](docs/FLUX.md) für detaillierte Roadmap und Architektur.
-
----
-
-## 🚀 Quick Start
-
-> **Note:** Noch nicht verfügbar. Coming Q2 2026.
+## Quick Start
 
 ```bash
-# Clone Repository
-git clone https://github.com/kaydietrich/flux.git
-cd flux
+git clone https://github.com/BadRix90/fluxdesk.git
+cd fluxdesk
 
-# Start mit Docker Compose
-docker-compose up -d
+# Copy environment file and adjust as needed
+cp .env.example .env
 
-# Läuft auf http://localhost:8000
+# Start all services
+docker compose up -d
+```
+
+The app will be available at:
+- **Frontend:** http://localhost:4200
+- **Backend API:** http://localhost:8000/api/
+
+### Services
+
+| Container | Purpose |
+|---|---|
+| `flux-backend` | Django API (Gunicorn) |
+| `flux-frontend` | Angular dev server |
+| `flux-db` | PostgreSQL 17 |
+| `flux-redis` | Redis 7 |
+| `flux-celery` | Celery worker |
+| `flux-celery-beat` | Celery scheduler |
+
+---
+
+## Project Structure
+
+```
+fluxdesk/
+  backend/
+    apps/
+      core/          # Organization, Invitation, auth endpoints
+      tickets/       # Ticket, Comment models + API
+      users/         # Custom User model with roles
+    config/          # Django settings, URLs, Celery, ASGI
+  frontend/
+    src/app/
+      core/          # Guards, interceptors, services, models
+      features/      # Auth, tickets, settings components
+      shared/        # Sidebar, status badge
+  docker-compose.yml
+  .env.example
 ```
 
 ---
 
-## 📖 Dokumentation
+## API Endpoints
 
-- **[FLUX.md](docs/FLUX.md)** - Komplettes Konzept-Dokument
-  - Vision & Marktanalyse
-  - Technische Architektur
-  - Business Model
-  - Konkurrenz-Vergleich
-- **[FLUX-DEV-RULES.md](docs/FLUX-DEV-RULES.md)** - Coding Standards & Guidelines
-  - Max 14 Zeilen pro Funktion
-  - Max 400 Zeilen pro Datei
-  - Django 6.0 & Angular 21 Best Practices
-- **[FLUX-DESIGN-SYSTEM.md](docs/FLUX-DESIGN-SYSTEM.md)** - Design System
-  - Farben (Light/Dark Mode)
-  - Typografie (Inter)
-  - WCAG AAA konform
-- **[Contributing Guidelines](CONTRIBUTING.md)** - Wie du beitragen kannst *(coming soon)*
-- **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community-Regeln *(coming soon)*
-
----
-
-## 🤝 Contributing
-
-Flux ist Open Source und lebt von der Community. Contributions sind willkommen!
-
-### Wie du helfen kannst
-
-Aktuell (Pre-Development):
-- 🌟 **Star das Repo** - Zeig Interesse!
-- 💡 **Diskutiere mit** - [GitHub Discussions](https://github.com/kaydietrich/flux/discussions)
-- 📝 **Feedback** - Was fehlt? Was ist falsch?
-
-Später (Development):
-- 🐛 Bug Reports
-- 💻 Code Contributions
-- 📚 Dokumentation
-- 🌍 Übersetzungen
-
-Siehe [CONTRIBUTING.md](CONTRIBUTING.md) für Details. *(coming soon)*
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/token/` | Login (JWT) |
+| POST | `/api/auth/token/refresh/` | Refresh token |
+| POST | `/api/register/` | Register new org + admin |
+| POST | `/api/verify-email/` | Verify email address |
+| POST | `/api/accept-invitation/` | Accept agent invitation |
+| GET/PATCH | `/api/organization/` | Org settings |
+| GET/POST/DELETE | `/api/invitations/` | Manage invitations |
+| GET/POST | `/api/tickets/` | List / create tickets |
+| GET/PATCH/DELETE | `/api/tickets/:id/` | Ticket detail |
+| POST | `/api/tickets/:id/assign_to_me/` | Assign ticket |
+| POST | `/api/tickets/:id/resolve/` | Resolve ticket |
+| POST | `/api/tickets/:id/close/` | Close ticket |
+| POST | `/api/tickets/:id/comment/` | Add comment |
+| GET | `/api/tickets/my_queue/` | Agent's assigned tickets |
+| GET | `/api/tickets/unassigned/` | Unassigned tickets |
+| GET | `/api/tickets/escalated/` | Escalated tickets |
 
 ---
 
-## 📊 Why Flux?
+## Development
 
-| Feature | Zammad | Zendesk | Jira SD | **Flux** |
-|---|---|---|---|---|
-| **RAM-Bedarf** | 4-8 GB | N/A | N/A | **< 500 MB** |
-| **Ticket öffnen** | ~1s | ~500ms | ~5s | **< 200ms** |
-| **Pro Agent/Monat** | N/A | $19-$99 | $20+ | **€0*** |
-| **AI-Integration** | Cloud | OpenAI (US) | Cloud | **Lokal (EU)** |
-| **DSGVO-konform** | ✅ | ⚠️ | ⚠️ | **✅ By Design** |
-| **Open Source** | ✅ GPL | ❌ | ❌ | **✅ AGPL** |
+### Backend (local)
 
-\* SaaS: Resource-based Pricing (€29-199/Monat), Self-Hosted: Kostenlos
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate      # Windows
+source venv/bin/activate   # Linux/Mac
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
 
----
+### Frontend (local)
 
-## 📜 License
+```bash
+cd frontend
+npm install
+npm start
+```
 
-Flux ist lizenziert unter der **GNU Affero General Public License v3.0 (AGPL-3.0)**.
-
-Das bedeutet:
-- ✅ Kostenlos nutzen, ändern, verteilen
-- ✅ Kommerziell nutzen (auch als SaaS)
-- ⚠️ Änderungen müssen unter AGPL veröffentlicht werden
-- ⚠️ Bei SaaS: Source Code muss Nutzern verfügbar sein
-
-Siehe [LICENSE](LICENSE) für Details.
+The Angular dev server proxies `/api` requests to `localhost:8000`.
 
 ---
 
-## 🙏 Acknowledgments
+## Documentation
 
-Flux steht auf den Schultern von Giganten:
-- **Django** - Das beste Web-Framework
-- **Angular** - Solide Frontend-Architektur
-- **PostgreSQL** - Die zuverlässigste Datenbank
-- **Ollama** - Local AI made easy
-- **Zammad** - Inspiration für "Was kann man besser machen"
+- [FLUX.md](docs/FLUX.md) — Architecture and concept
+- [FLUX-DEV-RULES.md](docs/FLUX-DEV-RULES.md) — Coding standards
+- [FLUX-DESIGN-SYSTEM.md](docs/FLUX-DESIGN-SYSTEM.md) — Design system
 
 ---
 
-## 📬 Kontakt
+## License
 
-- **Website:** [fluxdesk.eu](https://fluxdesk.eu)
-- **GitHub Discussions:** [Discuss](https://github.com/kaydietrich/flux/discussions)
-- **Email:** hello@fluxdesk.eu *(coming soon)*
-- **Twitter:** [@fluxdesk](https://twitter.com/fluxdesk) *(coming soon)*
+FluxDesk is licensed under the [GNU Affero General Public License v3.0](LICENSE).
 
----
-
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=kaydietrich/flux&type=Date)](https://star-history.com/#kaydietrich/flux&Date)
+You can freely use, modify, and distribute it. If you run a modified version as a service, you must make the source code available to your users.
 
 ---
 
 <div align="center">
 
-**Made with ❤️ in Germany by [Kay Dietrich](https://github.com/kaydietrich)**
+**Built by [Kay Dietrich](https://github.com/BadRix90)**
 
-*Support fließt, Probleme lösen sich. Flux.*
-
-[⬆ Back to Top](#flux)
+[fluxdesk.eu](https://fluxdesk.eu)
 
 </div>
