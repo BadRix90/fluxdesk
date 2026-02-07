@@ -15,6 +15,7 @@ export class TicketCreateComponent {
   private router = inject(Router);
   private ticketService = inject(TicketService);
 
+  customerEmail = '';
   subject = '';
   description = '';
   priority = 2;
@@ -26,6 +27,7 @@ export class TicketCreateComponent {
     this.error.set('');
 
     this.ticketService.createTicket({
+      customer_email: this.customerEmail,
       subject: this.subject,
       description: this.description,
       priority: this.priority as 1 | 2 | 3 | 4,

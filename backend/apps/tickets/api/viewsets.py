@@ -39,9 +39,21 @@ class TicketViewSet(viewsets.ModelViewSet):
         return TicketListSerializer
 
     def perform_create(self, serializer):
-        serializer.save(
-            customer=self.request.user,
-            organization=self.request.user.organization,
+        serializer.save()
+
+    def get_serializer_context(self):
+        ctx = super().get_serializer_context()
+        if self.action == 'create':
+            ctx['organization'] = self.request.user.organization
+        return ctx
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        ticket = serializer.save()
+        return Response(
+            TicketDetailSerializer(ticket).data,
+            status=status.HTTP_201_CREATED,
         )
 
     def perform_destroy(self, instance):

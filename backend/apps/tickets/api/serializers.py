@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.tickets.models import Attachment, Comment, Escalation, Ticket
 from apps.users.api.serializers import UserMinimalSerializer
+from apps.users.models import User
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -77,8 +78,35 @@ class TicketDetailSerializer(serializers.ModelSerializer):
         ]
 
 
-class TicketCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ticket
-        fields = ['id', 'ticket_number', 'subject', 'description', 'priority']
-        read_only_fields = ['id', 'ticket_number']
+class TicketCreateSerializer(serializers.Serializer):
+    """Create a ticket on behalf of a customer (by email)."""
+
+    customer_email = serializers.EmailField()
+    subject = serializers.CharField(max_length=200)
+    description = serializers.CharField()
+    priority = serializers.IntegerField(default=2)
+
+    def create(self, validated_data):
+        org = self.context['organization']
+        email = validated_data['customer_email']
+        customer = self._resolve_customer(email, org)
+        return Ticket.objects.create(
+            organization=org,
+            customer=customer,
+            subject=validated_data['subject'],
+            description=validated_data['description'],
+            priority=validated_data['priority'],
+        )
+
+    def _resolve_customer(self, email, org):
+        """Find existing customer or create a new one."""
+        try:
+            return User.objects.get(email=email, organization=org)
+        except User.DoesNotExist:
+            return User.objects.create_user(
+                username=email,
+                email=email,
+                organization=org,
+                role=User.Role.CUSTOMER,
+                is_active=False,
+            )

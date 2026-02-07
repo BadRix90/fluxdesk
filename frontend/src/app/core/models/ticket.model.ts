@@ -42,6 +42,13 @@ export interface Attachment {
   created_at: string;
 }
 
+export interface TicketCreatePayload {
+  customer_email: string;
+  subject: string;
+  description: string;
+  priority: TicketPriority;
+}
+
 export interface PaginatedResponse<T> {
   count: number;
   next: string | null;

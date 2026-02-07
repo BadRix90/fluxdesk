@@ -10,6 +10,18 @@
     }
 
     <div class="form-group">
+      <label for="customerEmail">Kunden-E-Mail</label>
+      <input
+        id="customerEmail"
+        type="email"
+        [(ngModel)]="customerEmail"
+        name="customerEmail"
+        placeholder="kunde@beispiel.de"
+        required
+      />
+    </div>
+
+    <div class="form-group">
       <label for="subject">Betreff</label>
       <input
         id="subject"
@@ -50,7 +62,7 @@
       <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="loading() || !subject.trim() || !description.trim()"
+        [disabled]="loading() || !customerEmail.trim() || !subject.trim() || !description.trim()"
       >
         {{ loading() ? 'Wird erstellt...' : 'Ticket erstellen' }}
       </button>

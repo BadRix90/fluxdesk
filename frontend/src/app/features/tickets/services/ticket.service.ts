@@ -4,6 +4,7 @@ import { Observable, tap } from 'rxjs';
 
 import {
   type Ticket,
+  type TicketCreatePayload,
   type Comment,
   type PaginatedResponse,
 } from '../../../core/models/ticket.model';
@@ -39,7 +40,7 @@ export class TicketService {
     );
   }
 
-  createTicket(data: Partial<Ticket>): Observable<Ticket> {
+  createTicket(data: TicketCreatePayload): Observable<Ticket> {
     return this.http.post<Ticket>(`${this.baseUrl}/`, data);
   }
 
