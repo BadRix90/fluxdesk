@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Invitation, Organization
+from .models import BusinessCalendar, Invitation, Organization
 
 
 @admin.register(Organization)
@@ -20,3 +20,9 @@ class InvitationAdmin(admin.ModelAdmin):
     list_filter = ['status', 'role']
     search_fields = ['email']
     readonly_fields = ['token', 'created_at']
+
+
+@admin.register(BusinessCalendar)
+class BusinessCalendarAdmin(admin.ModelAdmin):
+    list_display = ['organization', 'timezone', 'created_at']
+    list_filter = ['timezone']

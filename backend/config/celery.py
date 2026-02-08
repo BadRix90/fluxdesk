@@ -17,7 +17,7 @@ app.conf.beat_schedule = {
     },
     'check-escalations': {
         'task': 'apps.tickets.tasks.check_escalations',
-        'schedule': 3600.0,
+        'schedule': 300.0,
     },
     'auto-close-resolved': {
         'task': 'apps.tickets.tasks.auto_close_resolved',

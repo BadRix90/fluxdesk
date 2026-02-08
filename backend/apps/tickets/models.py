@@ -25,11 +25,20 @@ class TicketQuerySet(models.QuerySet):
         )
 
     def escalation_candidates(self):
-        """Tickets open > 24h without response."""
+        """Tickets open > 24h without response (legacy fallback)."""
         cutoff = timezone.now() - timezone.timedelta(hours=24)
         return self.active().filter(
             status=Ticket.Status.OPEN,
             updated_at__lt=cutoff,
+        )
+
+    def sla_breach_candidates(self):
+        """Tickets with SLA deadlines that have been breached."""
+        return self.active().filter(
+            escalation_at__isnull=False,
+            escalation_at__lte=timezone.now(),
+        ).exclude(
+            status__in=[Ticket.Status.CLOSED, Ticket.Status.WAITING],
         )
 
     def auto_close_candidates(self):
@@ -95,6 +104,35 @@ class Ticket(TimestampedModel, SoftDeleteModel):
     resolved_at = models.DateTimeField(null=True, blank=True)
     closed_at = models.DateTimeField(null=True, blank=True)
 
+    # ── SLA fields ───────────────────────────────────────────
+    sla = models.ForeignKey(
+        'SLA',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='tickets',
+    )
+    first_response_at = models.DateTimeField(null=True, blank=True)
+    last_agent_response_at = models.DateTimeField(null=True, blank=True)
+    last_customer_response_at = models.DateTimeField(null=True, blank=True)
+
+    # SLA deadlines (computed, UTC)
+    first_response_deadline = models.DateTimeField(null=True, blank=True)
+    next_response_deadline = models.DateTimeField(null=True, blank=True)
+    resolution_deadline = models.DateTimeField(null=True, blank=True)
+    escalation_at = models.DateTimeField(null=True, blank=True)
+
+    # Paused SLA: remaining business minutes when WAITING
+    sla_remaining_first_response = models.PositiveIntegerField(
+        null=True, blank=True,
+    )
+    sla_remaining_next_response = models.PositiveIntegerField(
+        null=True, blank=True,
+    )
+    sla_remaining_resolution = models.PositiveIntegerField(
+        null=True, blank=True,
+    )
+
     objects = TicketQuerySet.as_manager()
 
     class Meta:
@@ -125,6 +163,14 @@ class Ticket(TimestampedModel, SoftDeleteModel):
                 fields=['organization', '-created_at'],
                 name='idx_ticket_org',
             ),
+            models.Index(
+                fields=['escalation_at'],
+                condition=models.Q(
+                    deleted_at__isnull=True,
+                    escalation_at__isnull=False,
+                ),
+                name='idx_ticket_escalation_at',
+            ),
         ]
 
     def __str__(self) -> str:
@@ -149,6 +195,17 @@ class Ticket(TimestampedModel, SoftDeleteModel):
             self.status = self.Status.OPEN
         self.save(update_fields=['assignee', 'status', 'updated_at'])
 
+    def set_status(self, new_status) -> None:
+        """Change status with SLA pause/resume side effects."""
+        from apps.tickets.sla_engine import pause_sla, resume_sla
+
+        old_status = self.status
+        self.status = new_status
+        if new_status == self.Status.WAITING:
+            pause_sla(self)
+        elif old_status == self.Status.WAITING and new_status == self.Status.OPEN:
+            resume_sla(self)
+
     def resolve(self) -> None:
         """Mark ticket as resolved."""
         self.status = self.Status.RESOLVED
@@ -172,7 +229,7 @@ class Ticket(TimestampedModel, SoftDeleteModel):
             ticket=self,
             from_priority=old_priority,
             to_priority=self.priority,
-            reason='auto',
+            reason='sla_breach',
         )
         return True
 
@@ -181,6 +238,54 @@ class Ticket(TimestampedModel, SoftDeleteModel):
         """Hours since ticket creation."""
         delta = timezone.now() - self.created_at
         return delta.total_seconds() / 3600
+
+
+class SLA(TimestampedModel):
+    """Service Level Agreement for an organization."""
+
+    organization = models.ForeignKey(
+        'core.Organization',
+        on_delete=models.CASCADE,
+        related_name='slas',
+    )
+    name = models.CharField(max_length=100)
+    position = models.PositiveIntegerField(
+        default=0,
+        help_text='Lower position = higher priority for matching.',
+    )
+    is_active = models.BooleanField(default=True)
+    priority_filter = models.JSONField(
+        default=list,
+        help_text='List of priority ints this SLA applies to, e.g. [3, 4].',
+    )
+    first_response_minutes = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text='Max business minutes for first agent response.',
+    )
+    next_response_minutes = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text='Max business minutes for agent reply after customer msg.',
+    )
+    resolution_minutes = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text='Max business minutes from creation to resolution.',
+    )
+
+    class Meta:
+        db_table = 'flux_slas'
+        ordering = ['organization', 'position']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['organization', 'position'],
+                name='uq_sla_org_position',
+            ),
+        ]
+
+    def __str__(self) -> str:
+        return f'{self.name} ({self.organization.name})'
 
 
 class Comment(TimestampedModel):

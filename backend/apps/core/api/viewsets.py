@@ -2,11 +2,12 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
 from apps.core.email import send_invitation_email, send_verification_email
-from apps.core.models import Invitation, Organization
+from apps.core.models import BusinessCalendar, Invitation, Organization
 from apps.users.api.serializers import UserSerializer
 
 from .serializers import (
     AcceptInvitationSerializer,
+    BusinessCalendarSerializer,
     InvitationCreateSerializer,
     InvitationSerializer,
     OrganizationSerializer,
@@ -112,3 +113,20 @@ class AcceptInvitationView(viewsets.ViewSet):
             {'message': 'Konto erstellt. Du kannst dich jetzt anmelden.'},
             status=status.HTTP_201_CREATED,
         )
+
+
+class BusinessCalendarViewSet(viewsets.ModelViewSet):
+    """GET/PATCH for the organization's business calendar."""
+
+    serializer_class = BusinessCalendarSerializer
+    http_method_names = ['get', 'patch']
+
+    def get_object(self):
+        cal, _created = BusinessCalendar.objects.get_or_create(
+            organization=self.request.user.organization,
+        )
+        return cal
+
+    def list(self, request):
+        cal = self.get_object()
+        return Response(BusinessCalendarSerializer(cal).data)

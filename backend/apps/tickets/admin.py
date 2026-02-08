@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Attachment, Comment, Escalation, Ticket
+from .models import Attachment, Comment, Escalation, SLA, Ticket
 
 
 class CommentInline(admin.TabularInline):
@@ -19,11 +19,22 @@ class AttachmentInline(admin.TabularInline):
 class TicketAdmin(admin.ModelAdmin):
     list_display = [
         'id', 'subject', 'organization', 'status', 'priority',
-        'customer', 'assignee', 'created_at',
+        'customer', 'assignee', 'sla', 'escalation_at', 'created_at',
     ]
     list_filter = ['status', 'priority', 'organization']
     search_fields = ['subject', 'description']
     inlines = [CommentInline, AttachmentInline]
+
+
+@admin.register(SLA)
+class SLAAdmin(admin.ModelAdmin):
+    list_display = [
+        'name', 'organization', 'position', 'is_active',
+        'priority_filter', 'first_response_minutes',
+        'next_response_minutes', 'resolution_minutes',
+    ]
+    list_filter = ['organization', 'is_active']
+    ordering = ['organization', 'position']
 
 
 @admin.register(Escalation)

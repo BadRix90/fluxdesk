@@ -118,3 +118,46 @@ class Invitation(TimestampedModel):
         self.status = self.Status.ACCEPTED
         self.accepted_at = timezone.now()
         self.save(update_fields=['status', 'accepted_at'])
+
+
+class BusinessCalendar(TimestampedModel):
+    """Business hours and holidays for an organization."""
+
+    DEFAULT_HOURS = {
+        'mon': [['09:00', '17:00']],
+        'tue': [['09:00', '17:00']],
+        'wed': [['09:00', '17:00']],
+        'thu': [['09:00', '17:00']],
+        'fri': [['09:00', '17:00']],
+        'sat': [],
+        'sun': [],
+    }
+
+    organization = models.OneToOneField(
+        Organization,
+        on_delete=models.CASCADE,
+        related_name='business_calendar',
+    )
+    timezone = models.CharField(
+        max_length=50,
+        default='Europe/Berlin',
+    )
+    business_hours = models.JSONField(
+        default=dict,
+        help_text='Per-day timeframes: {"mon": [["09:00","17:00"]], ...}',
+    )
+    holidays = models.JSONField(
+        default=dict,
+        help_text='Date->name map: {"2026-12-25": "Weihnachten"}',
+    )
+
+    class Meta:
+        db_table = 'flux_business_calendars'
+
+    def __str__(self) -> str:
+        return f'Calendar: {self.organization.name}'
+
+    def save(self, *args, **kwargs):
+        if not self.business_hours:
+            self.business_hours = self.DEFAULT_HOURS.copy()
+        super().save(*args, **kwargs)

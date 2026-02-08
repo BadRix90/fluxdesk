@@ -3,8 +3,29 @@ from django.utils import timezone
 from django.utils.text import slugify
 from rest_framework import serializers
 
-from apps.core.models import Invitation, Organization
+from apps.core.models import BusinessCalendar, Invitation, Organization
 from apps.users.models import User
+
+
+class BusinessCalendarSerializer(serializers.ModelSerializer):
+    """Business hours and holidays for an organization."""
+
+    class Meta:
+        model = BusinessCalendar
+        fields = [
+            'id', 'timezone', 'business_hours', 'holidays',
+            'created_at', 'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def validate_business_hours(self, value):
+        valid_days = {'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'}
+        if not isinstance(value, dict):
+            raise serializers.ValidationError('Must be a dict.')
+        for key in value:
+            if key not in valid_days:
+                raise serializers.ValidationError(f'Invalid day: {key}')
+        return value
 
 
 class OrganizationSerializer(serializers.ModelSerializer):

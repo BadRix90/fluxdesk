@@ -35,12 +35,16 @@ LOOP_HEADERS = {
 
 @shared_task
 def check_escalations():
-    """Escalate tickets open > 24h without response."""
+    """Escalate tickets that have breached their SLA deadlines."""
     from apps.tickets.models import Ticket
 
-    candidates = Ticket.objects.escalation_candidates()
-    escalated = sum(1 for t in candidates if t.escalate())
-    logger.info('Escalated %d tickets', escalated)
+    sla_candidates = Ticket.objects.sla_breach_candidates()
+    legacy_candidates = Ticket.objects.escalation_candidates().filter(
+        sla__isnull=True,
+    )
+    all_candidates = sla_candidates | legacy_candidates
+    escalated = sum(1 for t in all_candidates if t.escalate())
+    logger.info('SLA-escalated %d tickets', escalated)
     return escalated
 
 
@@ -240,6 +244,7 @@ def _extract_references(msg):
 def _add_comment(ticket, sender, body, message_id):
     """Add comment to existing ticket, reopen if closed."""
     from apps.tickets.models import Comment
+    from apps.tickets.sla_engine import on_customer_response
 
     author = _find_or_create_customer(sender, ticket.organization)
     msg_md5 = hashlib.md5(message_id.encode()).hexdigest()
@@ -256,6 +261,7 @@ def _add_comment(ticket, sender, body, message_id):
         message_id_md5=msg_md5,
     )
     _reopen_if_closed(ticket)
+    on_customer_response(ticket)
     logger.info('Comment on #%d from %s', ticket.ticket_number, sender)
     return True
 
@@ -264,6 +270,7 @@ def _create_ticket(subject, sender, body, message_id, org):
     """Create new ticket from inbound email."""
     from apps.core.email import send_auto_reply_email
     from apps.tickets.models import Ticket
+    from apps.tickets.sla_engine import assign_sla_and_deadlines
 
     customer = _find_or_create_customer(sender, org)
     ticket = Ticket.objects.create(
@@ -272,6 +279,7 @@ def _create_ticket(subject, sender, body, message_id, org):
         subject=subject or 'Kein Betreff',
         description=body,
     )
+    assign_sla_and_deadlines(ticket)
     _store_message_id(ticket, message_id)
     send_auto_reply_email(ticket)
     logger.info('New ticket #%d from %s', ticket.ticket_number, sender)

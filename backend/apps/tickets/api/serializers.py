@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from apps.tickets.models import Attachment, Comment, Escalation, Ticket
+from apps.tickets.models import Attachment, Comment, Escalation, SLA, Ticket
 from apps.users.api.serializers import UserMinimalSerializer
 from apps.users.models import User
 
@@ -39,6 +39,28 @@ class EscalationSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 
 
+class SLAMinimalSerializer(serializers.ModelSerializer):
+    """Compact SLA for nesting inside ticket responses."""
+
+    class Meta:
+        model = SLA
+        fields = ['id', 'name']
+
+
+class SLASerializer(serializers.ModelSerializer):
+    """Full SLA serializer for CRUD."""
+
+    class Meta:
+        model = SLA
+        fields = [
+            'id', 'name', 'position', 'is_active',
+            'priority_filter', 'first_response_minutes',
+            'next_response_minutes', 'resolution_minutes',
+            'created_at', 'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
 class TicketListSerializer(serializers.ModelSerializer):
     """Compact ticket for list views."""
 
@@ -51,15 +73,16 @@ class TicketListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'ticket_number', 'subject', 'status', 'priority',
             'customer', 'assignee', 'created_at', 'updated_at',
-            'comment_count',
+            'comment_count', 'escalation_at',
         ]
 
 
 class TicketDetailSerializer(serializers.ModelSerializer):
-    """Full ticket with comments."""
+    """Full ticket with comments and SLA info."""
 
     customer = UserMinimalSerializer(read_only=True)
     assignee = UserMinimalSerializer(read_only=True)
+    sla = SLAMinimalSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     attachments = AttachmentSerializer(many=True, read_only=True)
 
@@ -69,12 +92,19 @@ class TicketDetailSerializer(serializers.ModelSerializer):
             'id', 'ticket_number', 'subject', 'description',
             'status', 'priority', 'customer', 'assignee',
             'created_at', 'updated_at', 'resolved_at', 'closed_at',
-            'comments', 'attachments',
+            'sla', 'first_response_at', 'last_agent_response_at',
+            'last_customer_response_at', 'first_response_deadline',
+            'next_response_deadline', 'resolution_deadline',
+            'escalation_at', 'comments', 'attachments',
         ]
         read_only_fields = [
             'id', 'ticket_number', 'customer',
             'created_at', 'updated_at',
             'resolved_at', 'closed_at',
+            'sla', 'first_response_at', 'last_agent_response_at',
+            'last_customer_response_at', 'first_response_deadline',
+            'next_response_deadline', 'resolution_deadline',
+            'escalation_at',
         ]
 
 
