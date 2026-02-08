@@ -29,6 +29,13 @@ export interface Organization {
   signature_html: string;
   is_active: boolean;
   created_at: string;
+  smtp_host: string;
+  smtp_port: number;
+  smtp_use_tls: boolean;
+  smtp_user: string;
+  smtp_has_password: boolean;
+  imap_host: string;
+  imap_user: string;
 }
 
 export interface Invitation {

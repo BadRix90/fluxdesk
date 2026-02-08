@@ -45,11 +45,125 @@
           [ngModel]="org.signature_html"
           (ngModelChange)="orgService.organization.set({...org, signature_html: $event})"
           name="signature"
-          rows="4"
+          rows="10"
           placeholder="<p>Mit freundlichen Grüßen</p>"
         ></textarea>
       </div>
+      @if (org.signature_html) {
+        <div class="signature-preview">
+          <label>Vorschau</label>
+          <div class="signature-preview-content" [innerHTML]="trustedSignature()"></div>
+        </div>
+      }
       <button (click)="saveOrg()" class="btn btn-primary">Speichern</button>
+    </section>
+
+    <!-- ── E-Mail / SMTP ────────────────────────── -->
+    <section class="settings-section">
+      <h3>E-Mail-Versand (SMTP)</h3>
+      @if (smtpSuccess()) {
+        <div class="success-msg">SMTP-Einstellungen gespeichert!</div>
+      }
+      @if (smtpError()) {
+        <div class="error-msg">{{ smtpError() }}</div>
+      }
+
+      <div class="smtp-grid">
+        <div class="form-group">
+          <label for="smtpHost">SMTP-Host</label>
+          <input
+            id="smtpHost"
+            type="text"
+            [ngModel]="org.smtp_host"
+            (ngModelChange)="orgService.organization.set({...org, smtp_host: $event})"
+            name="smtpHost"
+            placeholder="smtp.gmail.com"
+          />
+        </div>
+        <div class="form-group">
+          <label for="smtpPort">Port</label>
+          <input
+            id="smtpPort"
+            type="number"
+            [ngModel]="org.smtp_port"
+            (ngModelChange)="orgService.organization.set({...org, smtp_port: $event})"
+            name="smtpPort"
+            min="1"
+            max="65535"
+          />
+        </div>
+      </div>
+
+      <div class="smtp-grid">
+        <div class="form-group">
+          <label for="smtpUser">Benutzername</label>
+          <input
+            id="smtpUser"
+            type="text"
+            [ngModel]="org.smtp_user"
+            (ngModelChange)="orgService.organization.set({...org, smtp_user: $event})"
+            name="smtpUser"
+            placeholder="user@gmail.com"
+          />
+        </div>
+        <div class="form-group">
+          <label for="smtpPassword">
+            Passwort
+            @if (org.smtp_has_password) {
+              <span class="field-hint">(gesetzt – leer lassen zum Behalten)</span>
+            }
+          </label>
+          <input
+            id="smtpPassword"
+            type="password"
+            [(ngModel)]="smtpPassword"
+            name="smtpPassword"
+            placeholder="••••••••"
+          />
+        </div>
+      </div>
+
+      <div class="form-group smtp-tls">
+        <label>
+          <input
+            type="checkbox"
+            [ngModel]="org.smtp_use_tls"
+            (ngModelChange)="orgService.organization.set({...org, smtp_use_tls: $event})"
+            name="smtpTls"
+          />
+          TLS verwenden (empfohlen)
+        </label>
+      </div>
+
+      <h4>IMAP-Posteingang (optional)</h4>
+      <div class="smtp-grid">
+        <div class="form-group">
+          <label for="imapHost">IMAP-Host</label>
+          <input
+            id="imapHost"
+            type="text"
+            [ngModel]="org.imap_host"
+            (ngModelChange)="orgService.organization.set({...org, imap_host: $event})"
+            name="imapHost"
+            placeholder="imap.gmail.com"
+          />
+        </div>
+        <div class="form-group">
+          <label for="imapUser">IMAP-Benutzer</label>
+          <input
+            id="imapUser"
+            type="text"
+            [ngModel]="org.imap_user"
+            (ngModelChange)="orgService.organization.set({...org, imap_user: $event})"
+            name="imapUser"
+            placeholder="user@gmail.com"
+          />
+        </div>
+      </div>
+
+      <button (click)="saveSmtp()" class="btn btn-primary">
+        E-Mail-Einstellungen speichern
+      </button>
     </section>
 
     <!-- ── Geschäftszeiten ───────────────────────── -->

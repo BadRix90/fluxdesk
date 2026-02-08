@@ -1,6 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { OrgService } from './org.service';
 import { SlaService } from './sla.service';
@@ -19,10 +20,14 @@ import { PRIORITY_LABELS } from '../../core/models/ticket.model';
 export class SettingsComponent implements OnInit {
   orgService = inject(OrgService);
   slaService = inject(SlaService);
+  private sanitizer = inject(DomSanitizer);
 
   inviteEmail = '';
   inviteRole = 'AGENT';
+  smtpPassword = '';
   saveSuccess = signal(false);
+  smtpSuccess = signal(false);
+  smtpError = signal('');
   inviteSuccess = signal('');
   calendarSuccess = signal(false);
   slaSuccess = signal('');
@@ -55,6 +60,12 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  trustedSignature() {
+    const org = this.orgService.organization();
+    const html = org?.signature_html ?? '';
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
   saveOrg(): void {
     const org = this.orgService.organization();
     if (!org) return;
@@ -66,6 +77,33 @@ export class SettingsComponent implements OnInit {
     }).subscribe(() => {
       this.saveSuccess.set(true);
       setTimeout(() => this.saveSuccess.set(false), 3000);
+    });
+  }
+
+  saveSmtp(): void {
+    const org = this.orgService.organization();
+    if (!org) return;
+    const data: Record<string, unknown> = {
+      smtp_host: org.smtp_host,
+      smtp_port: org.smtp_port,
+      smtp_use_tls: org.smtp_use_tls,
+      smtp_user: org.smtp_user,
+      imap_host: org.imap_host,
+      imap_user: org.imap_user,
+    };
+    if (this.smtpPassword) {
+      data['smtp_password'] = this.smtpPassword;
+    }
+    this.smtpError.set('');
+    this.orgService.updateOrganization(data).subscribe({
+      next: () => {
+        this.smtpSuccess.set(true);
+        this.smtpPassword = '';
+        setTimeout(() => this.smtpSuccess.set(false), 3000);
+      },
+      error: () => {
+        this.smtpError.set('Fehler beim Speichern.');
+      },
     });
   }
 

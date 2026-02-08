@@ -29,18 +29,37 @@ class BusinessCalendarSerializer(serializers.ModelSerializer):
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
+    smtp_password = serializers.CharField(
+        write_only=True, required=False, allow_blank=True,
+    )
+    smtp_has_password = serializers.SerializerMethodField()
+
     class Meta:
         model = Organization
         fields = [
             'id', 'name', 'slug', 'support_email',
             'website', 'logo', 'signature_html',
             'is_active', 'created_at',
+            'smtp_host', 'smtp_port', 'smtp_use_tls',
+            'smtp_user', 'smtp_password', 'smtp_has_password',
+            'imap_host', 'imap_user',
         ]
-        read_only_fields = ['id', 'slug', 'is_active', 'created_at']
+        read_only_fields = [
+            'id', 'slug', 'is_active', 'created_at',
+        ]
+
+    def get_smtp_has_password(self, obj) -> bool:
+        return bool(obj.smtp_password)
 
     def create(self, validated_data):
         validated_data['slug'] = slugify(validated_data['name'])
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        pwd = validated_data.get('smtp_password', None)
+        if pwd == '':
+            validated_data.pop('smtp_password', None)
+        return super().update(instance, validated_data)
 
 
 def validate_no_disposable_email(email: str) -> str:
