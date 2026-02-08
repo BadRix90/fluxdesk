@@ -41,4 +41,12 @@ export class TicketListComponent implements OnInit {
   priorityLabel(p: number): string {
     return PRIORITY_LABELS[p as TicketPriority] ?? '';
   }
+
+  escalationState(escalationAt: string | null | undefined): 'breached' | 'warning' | 'none' {
+    if (!escalationAt) return 'none';
+    const diff = new Date(escalationAt).getTime() - Date.now();
+    if (diff < 0) return 'breached';
+    if (diff < 3600000) return 'warning';
+    return 'none';
+  }
 }

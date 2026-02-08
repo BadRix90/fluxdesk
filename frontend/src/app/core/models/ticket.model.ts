@@ -19,6 +19,14 @@ export interface Ticket {
   comments: Comment[];
   attachments: Attachment[];
   comment_count?: number;
+  sla?: { id: number; name: string } | null;
+  escalation_at?: string | null;
+  first_response_at?: string | null;
+  first_response_deadline?: string | null;
+  next_response_deadline?: string | null;
+  resolution_deadline?: string | null;
+  last_agent_response_at?: string | null;
+  last_customer_response_at?: string | null;
 }
 
 export interface Comment {

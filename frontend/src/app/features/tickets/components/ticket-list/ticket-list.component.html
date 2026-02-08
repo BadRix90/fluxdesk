@@ -29,6 +29,11 @@
         </div>
         <div class="ticket-meta">
           <app-status-badge [status]="ticket.status" />
+          @if (escalationState(ticket.escalation_at) === 'breached') {
+            <span class="escalation-icon breached" title="SLA überschritten">&#x1F525;</span>
+          } @else if (escalationState(ticket.escalation_at) === 'warning') {
+            <span class="escalation-icon warning" title="SLA-Warnung">&#x23F0;</span>
+          }
           <span class="ticket-priority" [attr.data-priority]="ticket.priority">
             {{ priorityLabel(ticket.priority) }}
           </span>

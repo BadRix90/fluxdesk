@@ -127,6 +127,25 @@
   text-align: right;
 }
 
+/* Escalation indicator */
+.escalation-icon {
+  font-size: 0.85rem;
+  line-height: 1;
+
+  &.breached {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  &.warning {
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* Skeleton loading */
 .skeleton-row {
   display: flex;

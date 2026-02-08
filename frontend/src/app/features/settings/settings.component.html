@@ -52,6 +52,200 @@
       <button (click)="saveOrg()" class="btn btn-primary">Speichern</button>
     </section>
 
+    <!-- ── Geschäftszeiten ───────────────────────── -->
+    @if (slaService.calendar(); as cal) {
+      <section class="settings-section">
+        <h3>Geschäftszeiten</h3>
+        @if (calendarSuccess()) {
+          <div class="success-msg">Geschäftszeiten gespeichert!</div>
+        }
+
+        <div class="form-group">
+          <label for="timezone">Zeitzone</label>
+          <select
+            id="timezone"
+            [ngModel]="cal.timezone"
+            (ngModelChange)="setTimezone($event)"
+            name="timezone"
+          >
+            @for (tz of timezones; track tz) {
+              <option [value]="tz">{{ tz }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="calendar-grid">
+          @for (day of dayKeys; track day) {
+            <div class="calendar-row">
+              <span class="day-label">{{ dayLabels[day] }}</span>
+              <input
+                type="time"
+                [ngModel]="getDayStart(day)"
+                (ngModelChange)="setDayHours(day, $event, getDayEnd(day))"
+                [name]="'start-' + day"
+                class="time-input"
+                placeholder="09:00"
+              />
+              <span class="time-separator">–</span>
+              <input
+                type="time"
+                [ngModel]="getDayEnd(day)"
+                (ngModelChange)="setDayHours(day, getDayStart(day), $event)"
+                [name]="'end-' + day"
+                class="time-input"
+                placeholder="17:00"
+              />
+              @if (getDayStart(day) && getDayEnd(day)) {
+                <button
+                  class="btn-icon"
+                  (click)="setDayHours(day, '', '')"
+                  title="Tag deaktivieren"
+                >&times;</button>
+              }
+            </div>
+          }
+        </div>
+
+        <h4>Feiertage</h4>
+        <div class="holiday-list">
+          @for (entry of holidayEntries(); track entry[0]) {
+            <div class="holiday-row">
+              <span class="holiday-date">{{ entry[0] }}</span>
+              <span class="holiday-name">{{ entry[1] }}</span>
+              <button class="btn-icon" (click)="removeHoliday(entry[0])">&times;</button>
+            </div>
+          }
+        </div>
+        <div class="holiday-form">
+          <input
+            type="date"
+            [(ngModel)]="newHolidayDate"
+            name="holidayDate"
+            class="holiday-input"
+          />
+          <input
+            type="text"
+            [(ngModel)]="newHolidayName"
+            name="holidayName"
+            placeholder="z.B. Weihnachten"
+            class="holiday-input"
+          />
+          <button
+            class="btn btn-secondary"
+            (click)="addHoliday()"
+            [disabled]="!newHolidayDate || !newHolidayName"
+          >Hinzufügen</button>
+        </div>
+
+        <button (click)="saveCalendar()" class="btn btn-primary" style="margin-top: 1rem;">
+          Geschäftszeiten speichern
+        </button>
+      </section>
+    }
+
+    <!-- ── SLA-Regeln ────────────────────────────── -->
+    <section class="settings-section">
+      <h3>SLA-Regeln</h3>
+      @if (slaSuccess()) {
+        <div class="success-msg">SLA „{{ slaSuccess() }}" erstellt!</div>
+      }
+
+      @if (slaService.slaRules().length > 0) {
+        <table class="sla-table">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Name</th>
+              <th>Prioritäten</th>
+              <th>Erstantwort</th>
+              <th>Folgeantwort</th>
+              <th>Lösung</th>
+              <th>Aktiv</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (sla of slaService.slaRules(); track sla.id) {
+              <tr [class.inactive]="!sla.is_active">
+                <td class="sla-position">{{ sla.position }}</td>
+                <td class="sla-name">{{ sla.name }}</td>
+                <td>
+                  <span class="priority-chips">
+                    {{ priorityChips(sla.priority_filter) || '–' }}
+                  </span>
+                </td>
+                <td>{{ formatMinutes(sla.first_response_minutes) }}</td>
+                <td>{{ formatMinutes(sla.next_response_minutes) }}</td>
+                <td>{{ formatMinutes(sla.resolution_minutes) }}</td>
+                <td>
+                  <button
+                    class="toggle-btn"
+                    [class.active]="sla.is_active"
+                    (click)="toggleSlaActive(sla.id, sla.is_active)"
+                  >{{ sla.is_active ? 'An' : 'Aus' }}</button>
+                </td>
+                <td>
+                  <button class="btn-delete" (click)="deleteSla(sla.id)">Löschen</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="empty-hint">Noch keine SLA-Regeln angelegt.</p>
+      }
+
+      <div class="sla-form">
+        <h4>Neue SLA-Regel</h4>
+        <div class="sla-form-grid">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" [(ngModel)]="newSlaName" name="slaName" placeholder="z.B. Premium" />
+          </div>
+          <div class="form-group">
+            <label>Position</label>
+            <input type="number" [(ngModel)]="newSlaPosition" name="slaPos" min="0" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Gilt für Prioritäten</label>
+          <div class="priority-picker">
+            @for (entry of [1,2,3,4]; track entry) {
+              <button
+                class="priority-chip"
+                [class.selected]="newSlaPriorities().includes(entry)"
+                [attr.data-priority]="entry"
+                (click)="toggleNewSlaPriority(entry)"
+              >{{ priorityChips([entry]) }}</button>
+            }
+          </div>
+        </div>
+
+        <div class="sla-form-grid sla-times">
+          <div class="form-group">
+            <label>Erstantwort (Min)</label>
+            <input type="number" [(ngModel)]="newSlaFirstResponse" name="slaFirst" min="1" placeholder="z.B. 60" />
+          </div>
+          <div class="form-group">
+            <label>Folgeantwort (Min)</label>
+            <input type="number" [(ngModel)]="newSlaNextResponse" name="slaNext" min="1" placeholder="z.B. 120" />
+          </div>
+          <div class="form-group">
+            <label>Lösung (Min)</label>
+            <input type="number" [(ngModel)]="newSlaResolution" name="slaRes" min="1" placeholder="z.B. 480" />
+          </div>
+        </div>
+
+        <button
+          class="btn btn-primary"
+          (click)="createSla()"
+          [disabled]="!newSlaName.trim()"
+        >SLA erstellen</button>
+      </div>
+    </section>
+
+    <!-- ── Mitarbeiter einladen ──────────────────── -->
     <section class="settings-section">
       <h3>Mitarbeiter einladen</h3>
       @if (inviteSuccess()) {

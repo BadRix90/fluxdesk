@@ -71,4 +71,22 @@ export class TicketDetailComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/tickets']);
   }
+
+  /* ── SLA Helpers ───────────────────────────── */
+
+  slaDeadlineStatus(deadline: string | null | undefined, fulfilledAt: string | null | undefined): 'met' | 'warning' | 'breached' | 'pending' {
+    if (fulfilledAt) return 'met';
+    if (!deadline) return 'pending';
+    const diff = new Date(deadline).getTime() - Date.now();
+    if (diff < 0) return 'breached';
+    if (diff < 3600000) return 'warning';
+    return 'pending';
+  }
+
+  slaIcon(status: string): string {
+    if (status === 'met') return '\u2705';
+    if (status === 'breached') return '\uD83D\uDD25';
+    if (status === 'warning') return '\u23F0';
+    return '\u23F0';
+  }
 }

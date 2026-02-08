@@ -30,6 +30,49 @@
         <span class="meta-item">{{ t.created_at | date:'dd.MM.yyyy HH:mm' }}</span>
       </div>
 
+      @if (t.sla) {
+        <div class="sla-info">
+          <div class="sla-header">
+            <span class="sla-label">SLA</span>
+            <span class="sla-name">{{ t.sla.name }}</span>
+          </div>
+          <div class="sla-deadlines">
+            @if (t.first_response_deadline || t.first_response_at) {
+              <div class="sla-row" [attr.data-status]="slaDeadlineStatus(t.first_response_deadline, t.first_response_at)">
+                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.first_response_deadline, t.first_response_at)) }}</span>
+                <span class="sla-type">Erstantwort</span>
+                @if (t.first_response_at) {
+                  <span class="sla-value">{{ t.first_response_at | date:'dd.MM.yy HH:mm' }}</span>
+                } @else if (t.first_response_deadline) {
+                  <span class="sla-value">{{ t.first_response_deadline | date:'dd.MM.yy HH:mm' }}</span>
+                }
+              </div>
+            }
+            @if (t.next_response_deadline) {
+              <div class="sla-row" [attr.data-status]="slaDeadlineStatus(t.next_response_deadline, null)">
+                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.next_response_deadline, null)) }}</span>
+                <span class="sla-type">Nächste Antwort</span>
+                <span class="sla-value">{{ t.next_response_deadline | date:'dd.MM.yy HH:mm' }}</span>
+              </div>
+            }
+            @if (t.resolution_deadline) {
+              <div class="sla-row" [attr.data-status]="slaDeadlineStatus(t.resolution_deadline, t.resolved_at)">
+                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.resolution_deadline, t.resolved_at)) }}</span>
+                <span class="sla-type">Lösung</span>
+                <span class="sla-value">{{ t.resolution_deadline | date:'dd.MM.yy HH:mm' }}</span>
+              </div>
+            }
+            @if (t.escalation_at) {
+              <div class="sla-row sla-escalation" [attr.data-status]="slaDeadlineStatus(t.escalation_at, null)">
+                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.escalation_at, null)) }}</span>
+                <span class="sla-type">Eskalation</span>
+                <span class="sla-value">{{ t.escalation_at | date:'dd.MM.yy HH:mm' }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
       <div class="description">
         <p>{{ t.description }}</p>
       </div>
