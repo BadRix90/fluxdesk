@@ -2,6 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import {
+  LucideAngularModule, CheckCircle, Flame,
+  Clock, ArrowLeft,
+} from 'lucide-angular';
 
 import { TicketService } from '../../services/ticket.service';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
@@ -10,7 +14,7 @@ import { PRIORITY_LABELS, type Ticket, type TicketPriority } from '../../../../c
 @Component({
   selector: 'app-ticket-detail',
   standalone: true,
-  imports: [DatePipe, FormsModule, StatusBadgeComponent],
+  imports: [DatePipe, FormsModule, StatusBadgeComponent, LucideAngularModule],
   templateUrl: './ticket-detail.component.html',
   styleUrl: './ticket-detail.component.scss',
 })
@@ -21,6 +25,8 @@ export class TicketDetailComponent implements OnInit {
 
   commentText = '';
   isInternal = signal(false);
+
+  readonly icons = { CheckCircle, Flame, Clock, ArrowLeft };
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -56,6 +62,13 @@ export class TicketDetailComponent implements OnInit {
     );
   }
 
+  escalate(): void {
+    if (!this.ticket) return;
+    this.ticketService.escalate(this.ticket.id).subscribe(
+      t => this.ticketService.selectedTicket.set(t)
+    );
+  }
+
   addComment(): void {
     if (!this.ticket || !this.commentText.trim()) return;
     this.ticketService.addComment(
@@ -74,7 +87,10 @@ export class TicketDetailComponent implements OnInit {
 
   /* ── SLA Helpers ───────────────────────────── */
 
-  slaDeadlineStatus(deadline: string | null | undefined, fulfilledAt: string | null | undefined): 'met' | 'warning' | 'breached' | 'pending' {
+  slaDeadlineStatus(
+    deadline: string | null | undefined,
+    fulfilledAt: string | null | undefined,
+  ): 'met' | 'warning' | 'breached' | 'pending' {
     if (fulfilledAt) return 'met';
     if (!deadline) return 'pending';
     const diff = new Date(deadline).getTime() - Date.now();
@@ -83,10 +99,9 @@ export class TicketDetailComponent implements OnInit {
     return 'pending';
   }
 
-  slaIcon(status: string): string {
-    if (status === 'met') return '\u2705';
-    if (status === 'breached') return '\uD83D\uDD25';
-    if (status === 'warning') return '\u23F0';
-    return '\u23F0';
+  slaIconFor(status: string) {
+    if (status === 'met') return this.icons.CheckCircle;
+    if (status === 'breached') return this.icons.Flame;
+    return this.icons.Clock;
   }
 }

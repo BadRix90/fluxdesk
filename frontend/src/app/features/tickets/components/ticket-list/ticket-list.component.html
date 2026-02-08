@@ -17,22 +17,22 @@
     }
   } @else if (ticketService.tickets().length === 0) {
     <div class="empty">
-      <div class="empty-icon">&#x1F4ED;</div>
+      <lucide-icon [img]="icons.Inbox" [size]="48" class="empty-icon"></lucide-icon>
       <p>Keine Tickets gefunden.</p>
     </div>
   } @else {
     @for (ticket of ticketService.tickets(); track ticket.id) {
       <a [routerLink]="['/tickets', ticket.id]" class="ticket-row">
         <div class="ticket-main">
-          <span class="ticket-id">#{{ ticket.ticket_number }}</span>
+          <span class="ticket-id">{{ ticket.display_number ?? '#' + ticket.ticket_number }}</span>
           <span class="ticket-subject">{{ ticket.subject }}</span>
         </div>
         <div class="ticket-meta">
           <app-status-badge [status]="ticket.status" />
           @if (escalationState(ticket.escalation_at) === 'breached') {
-            <span class="escalation-icon breached" title="SLA überschritten">&#x1F525;</span>
+            <lucide-icon [img]="icons.Flame" [size]="16" class="escalation-icon breached" title="SLA überschritten"></lucide-icon>
           } @else if (escalationState(ticket.escalation_at) === 'warning') {
-            <span class="escalation-icon warning" title="SLA-Warnung">&#x23F0;</span>
+            <lucide-icon [img]="icons.Clock" [size]="16" class="escalation-icon warning" title="SLA-Warnung"></lucide-icon>
           }
           <span class="ticket-priority" [attr.data-priority]="ticket.priority">
             {{ priorityLabel(ticket.priority) }}

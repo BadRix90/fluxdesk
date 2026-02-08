@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LucideAngularModule, Flame, Clock, Inbox } from 'lucide-angular';
 
 import { TicketService } from '../../services/ticket.service';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
@@ -9,13 +10,15 @@ import { PRIORITY_LABELS, type TicketPriority } from '../../../../core/models/ti
 @Component({
   selector: 'app-ticket-list',
   standalone: true,
-  imports: [DatePipe, RouterLink, StatusBadgeComponent],
+  imports: [DatePipe, RouterLink, StatusBadgeComponent, LucideAngularModule],
   templateUrl: './ticket-list.component.html',
   styleUrl: './ticket-list.component.scss',
 })
 export class TicketListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   ticketService = inject(TicketService);
+
+  readonly icons = { Flame, Clock, Inbox };
 
   ngOnInit(): void {
     const filter = this.route.snapshot.data['filter'] ?? 'all';

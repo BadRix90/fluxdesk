@@ -62,6 +62,12 @@ export class TicketService {
     );
   }
 
+  escalate(id: number): Observable<Ticket> {
+    return this.http.post<Ticket>(
+      `${this.baseUrl}/${id}/escalate/`, {}
+    );
+  }
+
   addComment(id: number, text: string, isInternal = false): Observable<Comment> {
     return this.http.post<Comment>(
       `${this.baseUrl}/${id}/comment/`,

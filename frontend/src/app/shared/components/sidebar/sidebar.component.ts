@@ -1,12 +1,13 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LucideAngularModule, Inbox, User, ClipboardList, Flame, Settings, Sun, Moon, LogOut } from 'lucide-angular';
 
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, LucideAngularModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   host: { '[class.mobile-open]': 'mobileOpen()' },
@@ -18,15 +19,17 @@ export class SidebarComponent {
   themeToggle = output<void>();
   closeSidebar = output<void>();
 
+  readonly icons = { Inbox, User, ClipboardList, Flame, Settings, Sun, Moon, LogOut };
+
   navItems = [
-    { label: 'Alle Tickets', route: '/tickets', icon: '\u{1F4E5}' },
-    { label: 'Meine Queue', route: '/tickets/my-queue', icon: '\u{1F464}' },
-    { label: 'Nicht zugewiesen', route: '/tickets/unassigned', icon: '\u{1F4CB}' },
-    { label: 'Eskaliert', route: '/tickets/escalated', icon: '\u{1F525}' },
-    { label: 'Einstellungen', route: '/settings', icon: '\u2699\uFE0F' },
+    { label: 'Alle Tickets', route: '/tickets', icon: Inbox },
+    { label: 'Meine Queue', route: '/tickets/my-queue', icon: User },
+    { label: 'Nicht zugewiesen', route: '/tickets/unassigned', icon: ClipboardList },
+    { label: 'Eskaliert', route: '/tickets/escalated', icon: Flame },
+    { label: 'Einstellungen', route: '/settings', icon: Settings },
   ];
 
-  themeIcon = computed(() => this.theme() === 'light' ? '\u263E' : '\u2600');
+  themeIcon = computed(() => this.theme() === 'light' ? Moon : Sun);
 
   initials = computed(() => {
     const user = this.auth.currentUser();

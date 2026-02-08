@@ -1,6 +1,9 @@
 @if (ticket; as t) {
   <div class="detail-header">
-    <button (click)="goBack()" class="back-btn">&larr; Zurück</button>
+    <button (click)="goBack()" class="back-btn">
+      <lucide-icon [img]="icons.ArrowLeft" [size]="16"></lucide-icon>
+      Zurück
+    </button>
     <div class="detail-actions">
       @if (!t.assignee) {
         <button (click)="assignToMe()" class="btn btn-primary">Mir zuweisen</button>
@@ -11,12 +14,18 @@
       @if (t.status === 'RESOLVED') {
         <button (click)="close()" class="btn btn-secondary">Schließen</button>
       }
+      @if (t.priority < 4 && t.status !== 'CLOSED') {
+        <button (click)="escalate()" class="btn btn-danger">
+          <lucide-icon [img]="icons.Flame" [size]="14"></lucide-icon>
+          Eskalieren
+        </button>
+      }
     </div>
   </div>
 
   <div class="detail-content">
     <div class="detail-main">
-      <h2 class="detail-subject">#{{ t.ticket_number }} {{ t.subject }}</h2>
+      <h2 class="detail-subject">{{ t.display_number ?? '#' + t.ticket_number }} {{ t.subject }}</h2>
 
       <div class="detail-meta">
         <app-status-badge [status]="t.status" />
@@ -39,7 +48,7 @@
           <div class="sla-deadlines">
             @if (t.first_response_deadline || t.first_response_at) {
               <div class="sla-row" [attr.data-status]="slaDeadlineStatus(t.first_response_deadline, t.first_response_at)">
-                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.first_response_deadline, t.first_response_at)) }}</span>
+                <lucide-icon [img]="slaIconFor(slaDeadlineStatus(t.first_response_deadline, t.first_response_at))" [size]="14" class="sla-icon"></lucide-icon>
                 <span class="sla-type">Erstantwort</span>
                 @if (t.first_response_at) {
                   <span class="sla-value">{{ t.first_response_at | date:'dd.MM.yy HH:mm' }}</span>
@@ -50,21 +59,21 @@
             }
             @if (t.next_response_deadline) {
               <div class="sla-row" [attr.data-status]="slaDeadlineStatus(t.next_response_deadline, null)">
-                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.next_response_deadline, null)) }}</span>
+                <lucide-icon [img]="slaIconFor(slaDeadlineStatus(t.next_response_deadline, null))" [size]="14" class="sla-icon"></lucide-icon>
                 <span class="sla-type">Nächste Antwort</span>
                 <span class="sla-value">{{ t.next_response_deadline | date:'dd.MM.yy HH:mm' }}</span>
               </div>
             }
             @if (t.resolution_deadline) {
               <div class="sla-row" [attr.data-status]="slaDeadlineStatus(t.resolution_deadline, t.resolved_at)">
-                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.resolution_deadline, t.resolved_at)) }}</span>
+                <lucide-icon [img]="slaIconFor(slaDeadlineStatus(t.resolution_deadline, t.resolved_at))" [size]="14" class="sla-icon"></lucide-icon>
                 <span class="sla-type">Lösung</span>
                 <span class="sla-value">{{ t.resolution_deadline | date:'dd.MM.yy HH:mm' }}</span>
               </div>
             }
             @if (t.escalation_at) {
               <div class="sla-row sla-escalation" [attr.data-status]="slaDeadlineStatus(t.escalation_at, null)">
-                <span class="sla-icon">{{ slaIcon(slaDeadlineStatus(t.escalation_at, null)) }}</span>
+                <lucide-icon [img]="slaIconFor(slaDeadlineStatus(t.escalation_at, null))" [size]="14" class="sla-icon"></lucide-icon>
                 <span class="sla-type">Eskalation</span>
                 <span class="sla-value">{{ t.escalation_at | date:'dd.MM.yy HH:mm' }}</span>
               </div>

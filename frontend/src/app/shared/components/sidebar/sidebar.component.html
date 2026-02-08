@@ -12,7 +12,7 @@
         [routerLinkActiveOptions]="{ exact: item.route === '/tickets' }"
         class="nav-item"
       >
-        <span class="nav-icon">{{ item.icon }}</span>
+        <lucide-icon [img]="item.icon" [size]="18" class="nav-icon"></lucide-icon>
         <span class="nav-label">{{ item.label }}</span>
       </a>
     }
@@ -20,7 +20,7 @@
 
   <div class="sidebar-footer">
     <button (click)="themeToggle.emit()" class="theme-toggle">
-      {{ themeIcon() }}
+      <lucide-icon [img]="themeIcon()" [size]="18"></lucide-icon>
     </button>
 
     @if (auth.currentUser(); as user) {
@@ -32,6 +32,9 @@
         </div>
       </div>
     }
-    <button (click)="auth.logout()" class="logout-btn">Abmelden</button>
+    <button (click)="auth.logout()" class="logout-btn">
+      <lucide-icon [img]="icons.LogOut" [size]="14"></lucide-icon>
+      Abmelden
+    </button>
   </div>
 </aside>

@@ -67,14 +67,20 @@ class TicketListSerializer(serializers.ModelSerializer):
     customer = UserMinimalSerializer(read_only=True)
     assignee = UserMinimalSerializer(read_only=True)
     comment_count = serializers.IntegerField(read_only=True)
+    display_number = serializers.SerializerMethodField()
 
     class Meta:
         model = Ticket
         fields = [
-            'id', 'ticket_number', 'subject', 'status', 'priority',
+            'id', 'ticket_number', 'display_number',
+            'subject', 'status', 'priority',
             'customer', 'assignee', 'created_at', 'updated_at',
             'comment_count', 'escalation_at',
         ]
+
+    def get_display_number(self, obj) -> str:
+        date_part = obj.created_at.strftime('%Y%m%d')
+        return f'FD-{date_part}-{obj.ticket_number:03d}'
 
 
 class TicketDetailSerializer(serializers.ModelSerializer):
@@ -85,11 +91,13 @@ class TicketDetailSerializer(serializers.ModelSerializer):
     sla = SLAMinimalSerializer(read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     attachments = AttachmentSerializer(many=True, read_only=True)
+    display_number = serializers.SerializerMethodField()
 
     class Meta:
         model = Ticket
         fields = [
-            'id', 'ticket_number', 'subject', 'description',
+            'id', 'ticket_number', 'display_number',
+            'subject', 'description',
             'status', 'priority', 'customer', 'assignee',
             'created_at', 'updated_at', 'resolved_at', 'closed_at',
             'sla', 'first_response_at', 'last_agent_response_at',
@@ -106,6 +114,10 @@ class TicketDetailSerializer(serializers.ModelSerializer):
             'next_response_deadline', 'resolution_deadline',
             'escalation_at',
         ]
+
+    def get_display_number(self, obj) -> str:
+        date_part = obj.created_at.strftime('%Y%m%d')
+        return f'FD-{date_part}-{obj.ticket_number:03d}'
 
 
 class TicketCreateSerializer(serializers.Serializer):

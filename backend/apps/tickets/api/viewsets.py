@@ -129,6 +129,17 @@ class TicketViewSet(viewsets.ModelViewSet):
         return Response(TicketDetailSerializer(ticket).data)
 
     @action(detail=True, methods=['post'])
+    def escalate(self, request, pk=None):
+        """Manually escalate ticket priority."""
+        ticket = self.get_object()
+        if not ticket.escalate():
+            return Response(
+                {'detail': 'Already at maximum priority.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return Response(TicketDetailSerializer(ticket).data)
+
+    @action(detail=True, methods=['post'])
     def restore(self, request, pk=None):
         """Restore a soft-deleted ticket."""
         ticket = Ticket.objects.get(pk=pk)
